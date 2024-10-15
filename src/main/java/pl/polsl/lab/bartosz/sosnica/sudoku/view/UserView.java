@@ -1,5 +1,6 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.view;
 
+import pl.polsl.lab.bartosz.sosnica.sudoku.controller.UserController;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.PlayerModel;
 
@@ -7,15 +8,16 @@ import java.util.Scanner;
 
 public class UserView {
 
-    public PlayerModel usernameInput(String[] args){
+   public UserView(){}
+
+    public String getUsernameInput(String[] args){
 
         if(args.length == 0){
             System.out.println("Enter your username: ");
             Scanner inputUser = new Scanner(System.in);
-            String username = inputUser.nextLine();
-            return new PlayerModel(username);
+            return inputUser.nextLine();
         }else{
-            return new PlayerModel(args[0]);
+            return args[0];
         }
     }
 
@@ -27,5 +29,26 @@ public class UserView {
             System.out.println();
         }
     }
+
+    public void displayMessage(String message){
+       System.out.println(message);
+    }
+
+    public int[] getUserMove(){
+       Scanner inputUser = new Scanner(System.in);
+
+       int[]move = new int[3];
+
+        System.out.println("Enter row number (1-9): ");
+        move[0] = Integer.parseInt(inputUser.nextLine());
+
+        System.out.println("Enter column number (1-9): ");
+        move[1] = Integer.parseInt(inputUser.nextLine());
+
+        System.out.println("Enter value (1-9): ");
+        move[2] = Integer.parseInt(inputUser.nextLine());
+
+        return move;
+   }
 
 }

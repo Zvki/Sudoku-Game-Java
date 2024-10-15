@@ -6,7 +6,7 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 
 class BoardControllerTest {
 
-    BoardController boardController = new BoardController(50);
+    BoardController boardController = new BoardController();
     UserView userView = new UserView();
 
     BoardControllerTest() throws InvalidSudokuMoveException {
@@ -27,7 +27,7 @@ class BoardControllerTest {
     @Test
     void fillingUpBoard() {
 
-        userView.boardDisplay(boardController.boardModel);
+        userView.boardDisplay(boardController.getBoardModel());
 
     }
 
