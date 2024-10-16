@@ -10,4 +10,10 @@ public class InvalidUserInputException extends Exception {
         super(message);
     }
 
+    public static void checkUsernameInput(String[] args) throws InvalidUserInputException {
+        if(args.length == 0){
+            throw new InvalidUserInputException("Enter your username: ");
+        }
+    }
+
 }

@@ -1,7 +1,6 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
 
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
-import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.*;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.PlayerModel;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;

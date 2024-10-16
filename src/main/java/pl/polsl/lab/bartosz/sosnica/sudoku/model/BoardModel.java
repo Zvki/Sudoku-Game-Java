@@ -1,6 +1,8 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 
+
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
+
 
 import java.util.Objects;
 
@@ -30,22 +32,15 @@ public class BoardModel {
         board[row][col] = "[" + value + "]";
     }
 
-    public void isValidNumber(int row,int col, int value)  {
+    public boolean isValidNumber(int row,int col, int value)  {
 
-        if(value > 10 || value < 1){
-            try {
-                throw new InvalidSudokuMoveException("The value must be between 1 and 10");
-            } catch (InvalidSudokuMoveException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        if(row > getBoard().length - 1 || row < 0 || col > getBoard().length - 1 || col < 0){
-            try {
-                throw new InvalidSudokuMoveException("The row must be between 0 and " + (getBoard().length - 1));
-            } catch (InvalidSudokuMoveException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            InvalidSudokuMoveException.checkCoordinates(row, col, board);
+            InvalidSudokuMoveException.checkValue(value);
+            return false;
+        } catch (InvalidSudokuMoveException e) {
+            System.out.println(e.getMessage());
+            return true;
         }
 
     }

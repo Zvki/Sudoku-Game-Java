@@ -22,12 +22,13 @@ public class BoardController {
         boardModel = new BoardModel();
         fillingUpBoard();
         removeNumbers(numbersRemoved);
-        System.out.println("niggers");
     }
 
     public boolean isMoveValid(int row, int col, int value) throws InvalidSudokuMoveException {
 
-        boardModel.isValidNumber(row, col, value);
+        if(boardModel.isValidNumber(row, col, value)){
+            return false;
+        };
 
         if(!boardModel.isValidPosition(row, col, value)){
             return false;
@@ -83,6 +84,19 @@ public class BoardController {
                 removed++;
             }
         }
+    }
+
+    public boolean isGameCompleted(){
+
+        for(int i = 0; i < boardModel.getBoard().length; i++){
+            for(int j = 0; j < boardModel.getBoard()[i].length; j++){
+                if(boardModel.getBoard()[i][j].equals("[ ]")){
+                    return false;
+                }
+            }
+        }
+        System.out.println("You solved sudoku");
+        return true;
     }
 
 }

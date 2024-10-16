@@ -2,6 +2,7 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.view;
 
 import pl.polsl.lab.bartosz.sosnica.sudoku.controller.UserController;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
+import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.PlayerModel;
 
 import java.util.Scanner;
@@ -12,13 +13,14 @@ public class UserView {
 
     public String getUsernameInput(String[] args){
 
-        if(args.length == 0){
-            System.out.println("Enter your username: ");
-            Scanner inputUser = new Scanner(System.in);
-            return inputUser.nextLine();
-        }else{
-            return args[0];
-        }
+       try{
+           InvalidUserInputException.checkUsernameInput(args);
+           return args[0];
+       } catch (InvalidUserInputException e) {
+           System.out.println(e.getMessage());
+           Scanner inputUser = new Scanner(System.in);
+           return inputUser.nextLine();
+       }
     }
 
     public void boardDisplay(BoardModel boardModel){
@@ -49,6 +51,12 @@ public class UserView {
         move[2] = Integer.parseInt(inputUser.nextLine());
 
         return move;
+   }
+
+   public void clearScreen(){
+       for(int i = 0; i < 50 ; i++){
+           System.out.println();
+       }
    }
 
 }
