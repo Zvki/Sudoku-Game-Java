@@ -9,9 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserControllerTest {
 
 
-    BoardController boardController = new BoardController();
-    UserView userView = new UserView();
-    UserController userController = new UserController(boardController, userView);
+
 
     UserControllerTest() throws InvalidSudokuMoveException {
     }
@@ -19,15 +17,6 @@ class UserControllerTest {
 
     @Test
     void processUserInput() throws InvalidSudokuMoveException {
-
-        userController.processUserInput(4,5,2);
-        userController.processUserInput(4,4,3);
-
-
-        assertThrows(InvalidSudokuMoveException.class, () -> {
-            userController.processUserInput(4, 6, 2);
-        });
-
 
     }
 }

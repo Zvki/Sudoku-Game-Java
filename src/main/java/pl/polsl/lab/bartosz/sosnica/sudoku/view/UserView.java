@@ -1,62 +1,66 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.view;
 
-import pl.polsl.lab.bartosz.sosnica.sudoku.controller.UserController;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
-import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
-import pl.polsl.lab.bartosz.sosnica.sudoku.model.PlayerModel;
 
-import java.util.Scanner;
-
+/**
+ * Class responsible for user interaction in the console-based Sudoku game.
+ * Provides methods for getting input from the user and displaying information.
+ */
 public class UserView {
 
-   public UserView(){}
+    /**
+     * Default constructor for UserView.
+     */
+    public UserView() {}
 
-    public String getUsernameInput(String[] args){
+    /**
+     * Displays the Sudoku board in a formatted way, including row and column numbers for better readability.
+     *
+     * @param boardModel the model containing the Sudoku board.
+     */
+    public void boardDisplay(BoardModel boardModel) {
+        String[][] board = boardModel.getBoard();
 
-       try{
-           InvalidUserInputException.checkUsernameInput(args);
-           return args[0];
-       } catch (InvalidUserInputException e) {
-           System.out.println(e.getMessage());
-           Scanner inputUser = new Scanner(System.in);
-           return inputUser.nextLine();
-       }
-    }
+        // Display column numbers
+        System.out.print("      ");
+        for (int col = 0; col < board[0].length; col++) {
+            System.out.print((col + 1) + "   ");
+        }
 
-    public void boardDisplay(BoardModel boardModel){
-        for(int i = 0; i< boardModel.getBoard().length; i++){
-            for(int j = 0; j< boardModel.getBoard()[i].length; j++){
-                System.out.print(boardModel.getBoard()[i][j]);
+        System.out.println();
+        System.out.println();
+
+        // Display row numbers and board content
+        for (int i = 0; i < board.length; i++) {
+            // Display row number
+            System.out.print((i + 1) + "    ");
+
+            // Display board content for each row
+            for (int j = 0; j < board[i].length; j++) {
+                System.out.print(board[i][j] + " ");
             }
             System.out.println();
         }
     }
 
-    public void displayMessage(String message){
-       System.out.println(message);
+    /**
+     * Displays a message to the user.
+     *
+     * @param message the message to be displayed.
+     */
+    public void displayMessage(String message) {
+        System.out.println(message);
     }
 
-    public int[] getUserMove(){
-       Scanner inputUser = new Scanner(System.in);
 
-       int[]move = new int[3];
-
-        System.out.println("Enter row number (1-9): ");
-        move[0] = Integer.parseInt(inputUser.nextLine());
-
-        System.out.println("Enter column number (1-9): ");
-        move[1] = Integer.parseInt(inputUser.nextLine());
-
-        System.out.println("Enter value (1-9): ");
-        move[2] = Integer.parseInt(inputUser.nextLine());
-
-        return move;
-   }
-
-   public void clearScreen(){
-       for(int i = 0; i < 50 ; i++){
-           System.out.println();
-       }
-   }
-
+    /**
+     * Clears the console by printing empty lines.
+     * This method simulates clearing the screen in a console application.
+     */
+    public void clearScreen() {
+        // Print 50 empty lines to simulate clearing the console
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+    }
 }
