@@ -1,10 +1,10 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
 
-import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.GameModel;
-import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 
 /**
+ * @author Bartosz Sośnica
+ * @version 1.0
  * The GameController class is responsible for managing the main game loop.
  * It checks the game state, displays the board, and handles player turns until the game is completed.
  */

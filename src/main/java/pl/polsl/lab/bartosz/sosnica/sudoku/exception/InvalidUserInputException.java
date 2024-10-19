@@ -1,6 +1,8 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.exception;
 
 /**
+ * @author Bartosz Sośnica
+ * @version 1.0
  * Custom exception class for handling invalid user input.
  * This exception is thrown when the user input is missing or incorrect.
  */

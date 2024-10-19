@@ -8,6 +8,8 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 import java.util.*;
 
 /**
+ * @author Bartosz Sośnica
+ * @version 1.0
  * The BoardController class is responsible for managing the Sudoku board.
  * It handles board setup, validation of moves, and game progress checking.
  */

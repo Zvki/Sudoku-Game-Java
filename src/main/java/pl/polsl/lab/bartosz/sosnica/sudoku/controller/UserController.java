@@ -8,6 +8,8 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 import java.util.Scanner;
 
 /**
+ * @author Bartosz Sośnica
+ * @version 1.0
  * The UserController class is responsible for managing user interactions and game flow.
  * It handles setting up the user, processing their input, and managing game turns.
  */

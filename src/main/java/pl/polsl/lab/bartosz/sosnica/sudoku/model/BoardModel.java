@@ -1,11 +1,12 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
-import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
 
 import java.util.Objects;
 
 /**
+ * @author Bartosz Sośnica
+ * @version 1.0
  * The BoardModel class represents the model of the Sudoku board.
  * It handles board setup, placement of values, validation of moves, and difficulty level management.
  */

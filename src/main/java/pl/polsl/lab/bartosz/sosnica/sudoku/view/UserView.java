@@ -3,6 +3,8 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.view;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
 
 /**
+ * @author Bartosz Sośnica
+ * @version 1.0
  * Class responsible for user interaction in the console-based Sudoku game.
  * Provides methods for getting input from the user and displaying information.
  */

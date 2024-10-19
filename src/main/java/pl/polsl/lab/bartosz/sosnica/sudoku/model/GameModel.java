@@ -1,9 +1,10 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 
-import pl.polsl.lab.bartosz.sosnica.sudoku.controller.BoardController;
 import pl.polsl.lab.bartosz.sosnica.sudoku.controller.UserController;
 
 /**
+ * @author Bartosz Sośnica
+ * @version 1.0
  * GameModel class represents the data and logic for the overall game state.
  * It initializes the user and board controllers and sets up the game for the user.
  */

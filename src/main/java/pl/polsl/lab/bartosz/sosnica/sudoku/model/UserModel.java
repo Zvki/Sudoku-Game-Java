@@ -3,6 +3,8 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
 
 /**
+ * @author Bartosz Sośnica
+ * @version 1.0
  * UserModel class represents the player in the Sudoku game.
  * It stores the player's username and score and provides methods
  * for setting and retrieving these values.

@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"pl.polsl.lab.bartosz.sosnica.sudoku"},{"l":"pl.polsl.lab.bartosz.sosnica.sudoku.controller"},{"l":"pl.polsl.lab.bartosz.sosnica.sudoku.exception"},{"l":"pl.polsl.lab.bartosz.sosnica.sudoku.model"},{"l":"pl.polsl.lab.bartosz.sosnica.sudoku.view"}];updateSearchResults();
