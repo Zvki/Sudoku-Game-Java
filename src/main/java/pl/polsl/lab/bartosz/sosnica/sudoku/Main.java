@@ -21,7 +21,11 @@ public class Main {
      * The main method that serves as the starting point of the application.
      * It creates a new GameController and starts the game loop.
      *
-     * @param args command-line arguments provided to the application (username and difficulty level).
+     * @param args command-line arguments provided to the application. The expected order is:
+     *             <ul>
+     *             <li>args[0] - the username (String)</li>
+     *             <li>args[1] - the difficulty level (String: how many numbers from board should be removed)</li>
+     *             </ul>
      */
     public static void main(String[] args) {
 

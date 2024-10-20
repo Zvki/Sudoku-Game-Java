@@ -148,7 +148,7 @@ public class BoardModel {
      * @throws InvalidSudokuMoveException if the difficulty input is invalid (e.g., too few arguments).
      */
     public void checkDifficultyInput(String[] diffLevel) throws InvalidSudokuMoveException {
-        if (diffLevel.length < 1) {
+        if (diffLevel.length < 2) {
             throw new InvalidSudokuMoveException("Enter your difficulty level: ");
         }
     }
