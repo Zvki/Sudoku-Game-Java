@@ -1,10 +1,12 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.exception;
 
 /**
- * @author Bartosz Sośnica
- * @version 1.0
+ * <p>
  * Custom exception class for handling invalid Sudoku moves.
  * This exception is thrown when a move violates the rules of Sudoku.
+ * </p>
+ * @author Bartosz Sośnica
+ * @version 1.0
  */
 public class InvalidSudokuMoveException extends Exception {
 

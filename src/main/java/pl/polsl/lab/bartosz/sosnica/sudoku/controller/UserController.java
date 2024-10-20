@@ -8,27 +8,49 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 import java.util.Scanner;
 
 /**
- * @author Bartosz Sośnica
- * @version 1.0
+ * <p>
  * The UserController class is responsible for managing user interactions and game flow.
  * It handles setting up the user, processing their input, and managing game turns.
+ * </p>
+ *
+ * @author Bartosz Sośnica
+ * @version 1.0
  */
 public class UserController {
 
     /**
      * The model representing the player.
      */
-    public UserModel userModel;
-
-    /**
-     * The view responsible for interacting with the user.
-     */
-    public UserView userView;
+    private UserModel userModel;
 
     /**
      * The controller responsible for managing the game board.
      */
-    public BoardController boardController;
+    private BoardController boardController;
+
+    /**
+     * The view responsible for interacting with the user.
+     */
+    private UserView userView;
+
+    /**
+     * Returns the instance of the BoardController associated with the current UserController.
+     *
+     * @return The BoardController instance that manages the game board.
+     */
+    public BoardController getBoardController() {
+        return boardController;
+    }
+
+    /**
+     * Returns the instance of the UserView associated with the current UserController.
+     * This view is responsible for interacting with the user.
+     *
+     * @return The UserView instance used for user interactions.
+     */
+    public UserView getUserView() {
+        return userView;
+    }
 
     /**
      * Default constructor for UserController.
@@ -110,16 +132,38 @@ public class UserController {
 
         // Get row number
         userView.displayMessage("Enter row number (1-9): ");
-        move[0] = Integer.parseInt(inputUser.nextLine());
+        move[0] = getUserMoveInput(inputUser);
 
         // Get column number
         userView.displayMessage("Enter column number (1-9): ");
-        move[1] = Integer.parseInt(inputUser.nextLine());
+        move[1] = getUserMoveInput(inputUser);
 
         // Get value
         userView.displayMessage("Enter value (1-9): ");
-        move[2] = Integer.parseInt(inputUser.nextLine());
+        move[2] = getUserMoveInput(inputUser);
 
         return move;
     }
+
+    /**
+     * Continuously prompts the user for input until a valid integer is provided.
+     * It uses the isInputNumber method to validate the input and returns the integer once valid input is received.
+     * If the input is not a valid number, it catches the InvalidUserInputException and displays an error message,
+     * prompting the user to try again.
+     *
+     * @param inputUser A Scanner object used to read the user's input from the console.
+     * @return The valid integer input provided by the user.
+     */
+    private int getUserMoveInput(Scanner inputUser) {
+
+        while (true) {
+            try {
+                return userModel.isInputNumber(inputUser.nextLine());
+            } catch (InvalidUserInputException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+
 }

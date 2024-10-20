@@ -8,10 +8,12 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 import java.util.*;
 
 /**
- * @author Bartosz Sośnica
- * @version 1.0
+ * <p>
  * The BoardController class is responsible for managing the Sudoku board.
  * It handles board setup, validation of moves, and game progress checking.
+ * </p>
+ * @author Bartosz Sośnica
+ * @version 1.0
  */
 public class BoardController {
 
@@ -78,7 +80,7 @@ public class BoardController {
      * @param col the starting column index.
      * @return true if the board is successfully filled, false otherwise.
      */
-    public boolean fill(int row, int col) {
+    private boolean fill(int row, int col) {
         if (row == boardModel.getBoard().length) return true;
         if (col == boardModel.getBoard()[row].length) return fill(row + 1, 0);
 

@@ -3,10 +3,12 @@ package pl.polsl.lab.bartosz.sosnica.sudoku;
 import pl.polsl.lab.bartosz.sosnica.sudoku.controller.GameController;
 
 /**
- *  * @author Bartosz Sośnica
- *  * @version 1.0
+ * <p>
  * The Main class serves as the entry point for the Sudoku application.
  * It initializes the game and starts the main game loop.
+ * </p>
+ * @author Bartosz Sośnica
+ * @version 1.0
  */
 public class Main {
 

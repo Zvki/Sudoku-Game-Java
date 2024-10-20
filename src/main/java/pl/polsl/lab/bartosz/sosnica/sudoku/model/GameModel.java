@@ -3,10 +3,12 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 import pl.polsl.lab.bartosz.sosnica.sudoku.controller.UserController;
 
 /**
- * @author Bartosz Sośnica
- * @version 1.0
+ * <p>
  * GameModel class represents the data and logic for the overall game state.
  * It initializes the user and board controllers and sets up the game for the user.
+ * </p>
+ * @author Bartosz Sośnica
+ * @version 1.0
  */
 public class GameModel {
 
@@ -24,7 +26,7 @@ public class GameModel {
     public GameModel(String[] args) {
         userController = new UserController();
         userController.settingUpUser(args);
-        userController.boardController.settingUpSudoku();
+        userController.getBoardController().settingUpSudoku();
     }
 
     /**
@@ -36,3 +38,4 @@ public class GameModel {
         return userController;
     }
 }
+

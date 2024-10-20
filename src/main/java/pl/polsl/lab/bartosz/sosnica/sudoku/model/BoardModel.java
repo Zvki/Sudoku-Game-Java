@@ -5,10 +5,12 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 import java.util.Objects;
 
 /**
- * @author Bartosz Sośnica
- * @version 1.0
+ * <p>
  * The BoardModel class represents the model of the Sudoku board.
  * It handles board setup, placement of values, validation of moves, and difficulty level management.
+ * </p>
+ * @author Bartosz Sośnica
+ * @version 1.0
  */
 public class BoardModel {
 
@@ -147,7 +149,7 @@ public class BoardModel {
      */
     public void checkDifficultyInput(String[] diffLevel) throws InvalidSudokuMoveException {
         if (diffLevel.length < 1) {
-            throw new InvalidSudokuMoveException("Enter your difficulty level");
+            throw new InvalidSudokuMoveException("Enter your difficulty level: ");
         }
     }
 
@@ -161,7 +163,7 @@ public class BoardModel {
         try {
             Integer.parseInt(diffLevel);
         } catch (NumberFormatException e) {
-            throw new InvalidSudokuMoveException("Difficulty level must be a number");
+            throw new InvalidSudokuMoveException("Difficulty level must be a number!");
         }
     }
 
