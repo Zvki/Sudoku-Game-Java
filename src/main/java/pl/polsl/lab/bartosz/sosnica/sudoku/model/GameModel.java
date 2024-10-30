@@ -1,6 +1,7 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 
 import pl.polsl.lab.bartosz.sosnica.sudoku.controller.UserController;
+import pl.polsl.lab.bartosz.sosnica.sudoku.view.SudokuGameView;
 
 /**
  * <p>
@@ -15,7 +16,8 @@ public class GameModel {
     /**
      * The controller that manages user input and interactions.
      */
-    static UserController userController;
+    private UserController userController;
+
 
     /**
      * Constructor for GameModel.
@@ -25,8 +27,6 @@ public class GameModel {
      */
     public GameModel(String[] args) {
         userController = new UserController();
-        userController.settingUpUser(args);
-        userController.getBoardController().settingUpSudoku();
     }
 
     /**

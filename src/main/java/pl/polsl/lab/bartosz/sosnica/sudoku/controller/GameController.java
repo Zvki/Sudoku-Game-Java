@@ -34,17 +34,22 @@ public class GameController {
     public void gameLoop() {
 
         // Continue looping until the Sudoku game is completed
-        while (!gameModel.getUserController().getBoardController().isGameCompleted()) {
+//        if(gameModel.getUserController().getUserInputGuiView().LoginGUI(gameModel.getUserController().getBoardController(), gameModel.getUserController())){
+//            while (!gameModel.getUserController().getBoardController().isGameCompleted()) {
+//
+//                // Clear the screen before displaying the updated board
+//                gameModel.getUserController().getUserView().clearScreen();
+//
+//                // Display the current state of the board
+//                gameModel.getUserController().getUserView().boardDisplay(gameModel.getUserController().getBoardController().getBoardModel());
+//
+//                // Process the player's turn
+//                playTurn();
+//            }
+//        }
 
-            // Clear the screen before displaying the updated board
-            gameModel.getUserController().getUserView().clearScreen();
+        gameModel.getUserController().getUserInputGuiView().LoginGUI(gameModel.getUserController().getBoardController(), gameModel.getUserController());
 
-            // Display the current state of the board
-            gameModel.getUserController().getUserView().boardDisplay(gameModel.getUserController().getBoardController().getBoardModel());
-
-            // Process the player's turn
-            playTurn();
-        }
     }
 
     /**

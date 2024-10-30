@@ -195,6 +195,25 @@ public class BoardModel {
      * @param diffLevel the difficulty level as a string, which is parsed into an integer.
      */
     public void settingDifficultyLevel(String diffLevel) {
-        this.difficultyLevel = Integer.parseInt(diffLevel);
+        this.difficultyLevel = convertDifficultyLevel(diffLevel);
+    }
+
+    private int convertDifficultyLevel(String diffLevel) {
+        int numberDiff = 20;
+        switch(diffLevel){
+            case "Easy": {
+                numberDiff = 10;
+                break;
+            }
+            case "Medium": {
+                numberDiff = 20;
+                break;
+            }
+            case "Hard": {
+                numberDiff = 30;
+                break;
+            }
+        }
+        return numberDiff;
     }
 }

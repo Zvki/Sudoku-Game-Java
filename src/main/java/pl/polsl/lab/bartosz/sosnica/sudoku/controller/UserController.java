@@ -3,6 +3,8 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.UserModel;
+import pl.polsl.lab.bartosz.sosnica.sudoku.view.SudokuGameView;
+import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserInputGuiView;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 
 import java.util.Scanner;
@@ -33,6 +35,10 @@ public class UserController {
      */
     private UserView userView;
 
+    private UserInputGuiView userInputGuiView;
+
+    private SudokuGameView sudokuGameView;
+
     /**
      * Returns the instance of the BoardController associated with the current UserController.
      *
@@ -59,6 +65,21 @@ public class UserController {
     public UserController() {
         this.userView = new UserView();
         this.boardController = new BoardController();
+        this.userInputGuiView = new UserInputGuiView();
+        this.userModel = new UserModel();
+        this.sudokuGameView = new SudokuGameView();
+    }
+
+    public UserModel getUserModel(){
+        return userModel;
+    }
+
+    public UserInputGuiView getUserInputGuiView(){
+        return userInputGuiView;
+    }
+
+    public SudokuGameView getSudokuGameView() {
+        return sudokuGameView;
     }
 
     /**
@@ -164,6 +185,5 @@ public class UserController {
             }
         }
     }
-
 
 }
