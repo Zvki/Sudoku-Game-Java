@@ -8,7 +8,7 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.model.GameModel;
  * It checks the game state, displays the board, and handles player turns until the game is completed.
  * </p>
  * @author Bartosz Sośnica
- * @version 1.0
+ * @version 2.0
  */
 public class GameController {
 
@@ -25,6 +25,7 @@ public class GameController {
      */
     public GameController(String[] args) {
         gameModel = new GameModel(args);
+        gameModel.getUserController().GameSetUp(args);
     }
 
     /**
@@ -32,24 +33,7 @@ public class GameController {
      * It clears the screen, displays the current state of the board, and processes the player's turn.
      */
     public void gameLoop() {
-
-        // Continue looping until the Sudoku game is completed
-//        if(gameModel.getUserController().getUserInputGuiView().LoginGUI(gameModel.getUserController().getBoardController(), gameModel.getUserController())){
-//            while (!gameModel.getUserController().getBoardController().isGameCompleted()) {
-//
-//                // Clear the screen before displaying the updated board
-//                gameModel.getUserController().getUserView().clearScreen();
-//
-//                // Display the current state of the board
-//                gameModel.getUserController().getUserView().boardDisplay(gameModel.getUserController().getBoardController().getBoardModel());
-//
-//                // Process the player's turn
-//                playTurn();
-//            }
-//        }
-
-        gameModel.getUserController().getUserInputGuiView().LoginGUI(gameModel.getUserController().getBoardController(), gameModel.getUserController());
-
+        gameModel.getUserController().getBoardController().setSudokuGameView();
     }
 
     /**

@@ -1,10 +1,10 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
 
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
-import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
-import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
+import pl.polsl.lab.bartosz.sosnica.sudoku.view.SudokuGameView;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -13,14 +13,18 @@ import java.util.*;
  * It handles board setup, validation of moves, and game progress checking.
  * </p>
  * @author Bartosz Sośnica
- * @version 1.0
+ * @version 2.0
  */
 public class BoardController {
 
     /**
      * The model representing the Sudoku board.
      */
+    private boolean isNumberRemoved = true;
+
     private BoardModel boardModel;
+
+    private SudokuGameView sudokuGameView;
 
     /**
      * Returns the current board model.
@@ -31,12 +35,62 @@ public class BoardController {
         return boardModel;
     }
 
+    public SudokuGameView getSudokuGameView(){
+        return sudokuGameView;
+    }
+
     /**
      * Default constructor for BoardController.
      * Initializes the BoardModel.
      */
     public BoardController() {
         boardModel = new BoardModel();
+    }
+
+    public void setSudokuGameView(){
+        sudokuGameView = new SudokuGameView();
+        initializeListeners();
+    }
+
+    public void initializeListeners(){
+        sudokuGameView.addStartButtonListener(e -> {
+            settingUpSudoku();
+            updateBoard(sudokuGameView.getBoardPanel());
+        });
+
+        sudokuGameView.addAddValueButtonListener(e -> {
+            readUserInput();
+            updateBoard(sudokuGameView.getBoardPanel());
+        });
+    }
+
+    private void updateBoard(JPanel boardPanel){
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                JTextField cell = (JTextField) boardPanel.getComponent(i * 9 + j);
+                String value = getBoardModel().getBoard()[i][j].equals("[ ]") ? "" : getBoardModel().getBoard()[i][j];
+                cell.setText(value);
+                cell.setEditable(value.isEmpty());
+            }
+        }
+    }
+
+    private void readUserInput() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                JTextField cell = sudokuGameView.getCellAt(i, j);
+                String userInput = cell.getText().trim();
+                // Sprawdź, czy wpis jest liczbą od 1 do 9 i czy nie jest pusty
+                if(userInput.matches("[1-9]")){
+                    try{
+                        isMoveValid(i, j, Integer.parseInt(userInput));
+                        getBoardModel().placeValue(i, j, Integer.parseInt(userInput));
+                    } catch (InvalidSudokuMoveException e) {
+                        JOptionPane.showMessageDialog(null, e.getMessage());
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -116,17 +170,21 @@ public class BoardController {
      * @param numbersRemoved the number of cells to remove.
      */
     private void removeNumbers(int numbersRemoved) {
-        Random rand = new Random();
-        int removed = 0;
+        if(isNumberRemoved){
+            Random rand = new Random();
+            int removed = 0;
 
-        while (removed < numbersRemoved) {
-            int row = rand.nextInt(boardModel.getBoard().length);
-            int col = rand.nextInt(boardModel.getBoard()[row].length);
+            while (removed < numbersRemoved) {
+                int row = rand.nextInt(boardModel.getBoard().length);
+                int col = rand.nextInt(boardModel.getBoard()[row].length);
 
-            if (!boardModel.getBoard()[row][col].equals("[ ]")) {
-                boardModel.removeValue(row, col); // Remove the number
-                removed++;
+                if (!boardModel.getBoard()[row][col].equals("[ ]")) {
+                    boardModel.removeValue(row, col); // Remove the number
+                    removed++;
+                }
             }
+
+            isNumberRemoved = false;
         }
     }
 

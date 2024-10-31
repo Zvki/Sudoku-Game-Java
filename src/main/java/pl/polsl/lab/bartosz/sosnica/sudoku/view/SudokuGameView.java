@@ -1,22 +1,22 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.view;
 
-import pl.polsl.lab.bartosz.sosnica.sudoku.controller.BoardController;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SudokuGameView extends JFrame {
 
-    private BoardController boardController;
     private JPanel boardPanel;
     private JComboBox<String> difficultyComboBox;
     private JButton startButton;
     private JButton addValueButton;
 
-    public void SudokuGUI(BoardController boardController) {
-        this.boardController = boardController;
+    public SudokuGameView(){
+        SudokuGUI();
+    }
+
+    public void SudokuGUI() {
+
         setTitle("Sudoku Game");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,28 +39,25 @@ public class SudokuGameView extends JFrame {
             boardPanel.add(cell);
         }
 
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boardController.settingUpSudoku();
-                updateBoard();
-            }
-        });
-
         add(controlPanel, BorderLayout.NORTH);
         add(boardPanel, BorderLayout.CENTER);
         setVisible(true);
     }
 
-    private void updateBoard() {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                JTextField cell = (JTextField) boardPanel.getComponent(i * 9 + j);
-                String value = boardController.getBoardModel().getBoard()[i][j].equals("[ ]") ? "" : boardController.getBoardModel().getBoard()[i][j];
-                cell.setText(value);
-                cell.setEditable(value.isEmpty());
-            }
-        }
+    public void addStartButtonListener(ActionListener listener){
+        startButton.addActionListener(listener);
+    }
+
+    public void addAddValueButtonListener(ActionListener listener) {
+        addValueButton.addActionListener(listener);
+    }
+
+    public JTextField getCellAt(int row, int col) {
+        return (JTextField) boardPanel.getComponent(row * 9 + col);
+    }
+
+    public JPanel getBoardPanel(){
+        return boardPanel;
     }
 
 }

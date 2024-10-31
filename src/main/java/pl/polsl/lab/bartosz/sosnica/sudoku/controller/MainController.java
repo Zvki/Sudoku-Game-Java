@@ -7,6 +7,7 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.view.SudokuGameView;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserInputGuiView;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 /**
@@ -16,9 +17,9 @@ import java.util.Scanner;
  * </p>
  *
  * @author Bartosz Sośnica
- * @version 1.0
+ * @version 2.0
  */
-public class UserController {
+public class MainController {
 
     /**
      * The model representing the player.
@@ -62,12 +63,10 @@ public class UserController {
      * Default constructor for UserController.
      * Initializes the UserView and BoardController.
      */
-    public UserController() {
+    public MainController() {
         this.userView = new UserView();
         this.boardController = new BoardController();
-        this.userInputGuiView = new UserInputGuiView();
         this.userModel = new UserModel();
-        this.sudokuGameView = new SudokuGameView();
     }
 
     public UserModel getUserModel(){
@@ -97,6 +96,18 @@ public class UserController {
 
         // Set the difficulty level for the game
         this.boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
+    }
+
+    public void GameSetUp(String[] args){
+        try{
+            userModel.checkUsernameInput(args);
+            userModel.setUsername(args[0]);
+            boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
+        } catch (InvalidUserInputException e) {
+            System.out.println(e.getMessage());
+            userInputGuiView = new UserInputGuiView();
+            handleLogin(userInputGuiView);
+        }
     }
 
     /**
@@ -164,6 +175,24 @@ public class UserController {
         move[2] = getUserMoveInput(inputUser);
 
         return move;
+    }
+
+    public void handleLogin(UserInputGuiView userInputGuiView){
+        userInputGuiView.addSubmitButtonListener(e -> {
+            String username = userInputGuiView.getUsername();
+            String difficulty = userInputGuiView.getDifficulty();
+
+            userModel.setUsername(username);
+            boardController.getBoardModel().settingDifficultyLevel(difficulty);
+
+            JOptionPane.showMessageDialog(null, "Welcome, " + username + "! Difficulty Level: " + difficulty);
+
+            // Zamknięcie okna po rozpoczęciu gry
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(userInputGuiView.getSubmitButton());
+            if (frame != null) {
+                frame.dispose();
+            }
+        });
     }
 
     /**

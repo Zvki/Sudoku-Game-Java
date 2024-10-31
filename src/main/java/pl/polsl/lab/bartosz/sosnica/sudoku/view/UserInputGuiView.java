@@ -1,11 +1,7 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.view;
 
-import pl.polsl.lab.bartosz.sosnica.sudoku.controller.BoardController;
-import pl.polsl.lab.bartosz.sosnica.sudoku.controller.UserController;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 
@@ -17,7 +13,11 @@ public class UserInputGuiView extends JFrame {
     private String username;
     private String difficulty;
 
-    public void LoginGUI(BoardController boardController, UserController userController) {
+    public UserInputGuiView(){
+        LoginGUI();
+    }
+
+    public void LoginGUI() {
         setTitle("Login to Sudoku");
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,21 +37,6 @@ public class UserInputGuiView extends JFrame {
         difficultyPanel.add(difficultyComboBox);
 
         submitButton = new JButton("Start game");
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                username = usernameField.getText();
-                difficulty = (String) difficultyComboBox.getSelectedItem();
-                userController.getUserModel().setUsername(username);
-                boardController.getBoardModel().settingDifficultyLevel(difficulty);
-
-                JOptionPane.showMessageDialog(null, "Welcome, " + username + "! Difficulty Level: " + difficulty);
-
-                userController.getSudokuGameView().SudokuGUI(boardController);
-
-                dispose();
-            }
-        });
 
         setLayout(new BorderLayout());
         add(userPanel, BorderLayout.NORTH);
@@ -59,6 +44,22 @@ public class UserInputGuiView extends JFrame {
         add(submitButton, BorderLayout.SOUTH);
 
         setVisible(true);
+    }
+
+    public void addSubmitButtonListener(ActionListener listener){
+        submitButton.addActionListener(listener);
+    }
+
+    public JButton getSubmitButton() {
+        return submitButton;
+    }
+
+    public String getUsername() {
+        return usernameField.getText();
+    }
+
+    public String getDifficulty() {
+        return (String) difficultyComboBox.getSelectedItem();
     }
 
 }
