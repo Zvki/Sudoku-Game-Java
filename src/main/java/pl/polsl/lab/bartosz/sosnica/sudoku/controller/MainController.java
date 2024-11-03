@@ -8,11 +8,13 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserInputGuiView;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 
 import javax.swing.*;
+import java.io.*;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 /**
  * <p>
- * The UserController class is responsible for managing user interactions and game flow.
+ * The MainController class is responsible for managing user interactions and game flow.
  * It handles setting up the user, processing their input, and managing game turns.
  * </p>
  *
@@ -64,7 +66,7 @@ public class MainController {
      * Initializes the UserView and BoardController.
      */
     public MainController() {
-        this.userView = new UserView();
+    //    this.userView = new UserView();
         this.boardController = new BoardController();
         this.userModel = new UserModel();
     }
@@ -104,9 +106,9 @@ public class MainController {
             userModel.setUsername(args[0]);
             boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
         } catch (InvalidUserInputException e) {
-            System.out.println(e.getMessage());
             userInputGuiView = new UserInputGuiView();
-            handleLogin(userInputGuiView);
+            handleLogin();
+            loadGameRecordsFromFile();
         }
     }
 
@@ -144,8 +146,8 @@ public class MainController {
 
         // Validate and place the move if valid
         try {
-            boardController.isMoveValid(realRow, realColumn, value);
-            boardController.getBoardModel().placeValue(realRow, realColumn, value);
+            boardController.isMoveValid(realRow, realColumn, String.valueOf(value));
+            boardController.getBoardModel().placeValue(realRow, realColumn, String.valueOf(value));
             userView.displayMessage("Move placed successfully!");
         } catch (InvalidSudokuMoveException e) {
             System.out.println(e.getMessage());
@@ -177,7 +179,7 @@ public class MainController {
         return move;
     }
 
-    public void handleLogin(UserInputGuiView userInputGuiView){
+    public void handleLogin(){
         userInputGuiView.addSubmitButtonListener(e -> {
             String username = userInputGuiView.getUsername();
             String difficulty = userInputGuiView.getDifficulty();
@@ -187,8 +189,9 @@ public class MainController {
 
             JOptionPane.showMessageDialog(null, "Welcome, " + username + "! Difficulty Level: " + difficulty);
 
-            // Zamknięcie okna po rozpoczęciu gry
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(userInputGuiView.getSubmitButton());
+            boardController.setSudokuGameView();
+            saveGameRecordToFile();
             if (frame != null) {
                 frame.dispose();
             }
@@ -214,5 +217,33 @@ public class MainController {
             }
         }
     }
+
+    public void loadGameRecordsFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\JAVA_PROJECTS\\JWUIM_LAB\\exercise1a\\PROJECT_SUDOKU\\src\\main\\java\\pl\\polsl\\lab\\bartosz\\sosnica\\sudoku\\resources\\gamehistory.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(" "); // Zakładając, że dane są oddzielone przecinkiem
+                if (data.length >= 3) {
+                    String username = data[0];
+                    String date = data[1];
+                    String difficulty = data[2];
+                    userInputGuiView.addGameRecord(username, date, difficulty); // Możesz dostosować status
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveGameRecordToFile() {
+        LocalDate currentDate = LocalDate.now();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\JAVA_PROJECTS\\JWUIM_LAB\\exercise1a\\PROJECT_SUDOKU\\src\\main\\java\\pl\\polsl\\lab\\bartosz\\sosnica\\sudoku\\resources\\gamehistory.txt", true))) {
+            writer.write(userModel.getUsername() + " " + currentDate + " " + boardController.getBoardModel().getDifficultyLevel());
+            writer.newLine(); // Dodaj nową linię po każdym wpisie
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

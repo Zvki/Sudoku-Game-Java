@@ -28,11 +28,7 @@ public class Main {
      *             </ul>
      */
     public static void main(String[] args) {
-
-        // Initialize the GameController with the provided command-line arguments
         gameController = new GameController(args);
-        // Start the main game loop
-        gameController.gameLoop();
     }
 
 }

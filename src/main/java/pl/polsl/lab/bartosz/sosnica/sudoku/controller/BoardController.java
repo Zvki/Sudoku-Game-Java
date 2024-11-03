@@ -20,7 +20,7 @@ public class BoardController {
     /**
      * The model representing the Sudoku board.
      */
-    private boolean isNumberRemoved = true;
+    private boolean isNumberRemoved = false;
 
     private BoardModel boardModel;
 
@@ -61,32 +61,42 @@ public class BoardController {
         sudokuGameView.addAddValueButtonListener(e -> {
             readUserInput();
             updateBoard(sudokuGameView.getBoardPanel());
+            isGameCompleted();
         });
     }
 
-    private void updateBoard(JPanel boardPanel){
+    private void updateBoard(JPanel panel) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                JTextField cell = (JTextField) boardPanel.getComponent(i * 9 + j);
-                String value = getBoardModel().getBoard()[i][j].equals("[ ]") ? "" : getBoardModel().getBoard()[i][j];
-                cell.setText(value);
-                cell.setEditable(value.isEmpty());
+                JTextField cell = sudokuGameView.getCellAt(i, j); // Uzyskujemy komórkę za pomocą getCellAt
+                String value = getBoardModel().getBoard()[i][j];
+                cell.setText(value != null ? value : ""); // Ustawia "" jeśli wartość jest null
+                cell.setEditable(value.isEmpty()); // Umożliwia edycję tylko pustych komórek
             }
         }
     }
 
     private void readUserInput() {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                JTextField cell = sudokuGameView.getCellAt(i, j);
-                String userInput = cell.getText().trim();
-                // Sprawdź, czy wpis jest liczbą od 1 do 9 i czy nie jest pusty
-                if(userInput.matches("[1-9]")){
-                    try{
-                        isMoveValid(i, j, Integer.parseInt(userInput));
-                        getBoardModel().placeValue(i, j, Integer.parseInt(userInput));
-                    } catch (InvalidSudokuMoveException e) {
-                        JOptionPane.showMessageDialog(null, e.getMessage());
+        // Przechodzimy przez komórki w układzie 3x3
+        for (int blockRow = 0; blockRow < 3; blockRow++) {
+            for (int blockCol = 0; blockCol < 3; blockCol++) {
+                for (int row = 0; row < 3; row++) {
+                    for (int col = 0; col < 3; col++) {
+                        int i = blockRow * 3 + row;
+                        int j = blockCol * 3 + col;
+                        JTextField cell = sudokuGameView.getCellAt(i, j);
+                        String userInput = cell.getText().trim();
+
+                        // Sprawdź, czy wpis jest niepusty i różni się od bieżącej wartości w tablicy
+                        if (!userInput.isEmpty() && !userInput.equals(getBoardModel().getBoard()[i][j])) {
+                            try {
+                                // Sprawdzamy poprawność tylko dla zmienionej wartości
+                                isMoveValid(i, j, userInput);
+                                getBoardModel().placeValue(i, j, userInput); // Ustawiamy nową wartość na planszy
+                            } catch (InvalidSudokuMoveException e) {
+                                JOptionPane.showMessageDialog(null, e.getMessage());
+                            }
+                        }
                     }
                 }
             }
@@ -100,7 +110,7 @@ public class BoardController {
         // Fill the board with numbers
         fillingUpBoard();
         // Remove numbers based on the chosen difficulty level
-        removeNumbers(boardModel.getDifficultyLevel());
+        removeNumbers(boardModel.getNumberDiff());
     }
 
     /**
@@ -111,7 +121,7 @@ public class BoardController {
      * @param value the value to place at the specified row and column.
      * @throws InvalidSudokuMoveException if the move violates Sudoku rules.
      */
-    public void isMoveValid(int row, int col, int value) throws InvalidSudokuMoveException {
+    public void isMoveValid(int row, int col, String value) throws InvalidSudokuMoveException {
 
         boardModel.isValidNumber(row, col, value);
         boardModel.isValidPosition(row, col, value);
@@ -147,8 +157,8 @@ public class BoardController {
         for(int number : numbers){
 
             try{
-                isMoveValid(row,col,number);
-                boardModel.placeValue(row, col, number);
+                isMoveValid(row,col,String.valueOf(number));
+                boardModel.placeValue(row, col, String.valueOf(number));
 
                 if(fill(row, col + 1)){
                     return true;
@@ -170,7 +180,7 @@ public class BoardController {
      * @param numbersRemoved the number of cells to remove.
      */
     private void removeNumbers(int numbersRemoved) {
-        if(isNumberRemoved){
+        if (!isNumberRemoved) {
             Random rand = new Random();
             int removed = 0;
 
@@ -178,13 +188,13 @@ public class BoardController {
                 int row = rand.nextInt(boardModel.getBoard().length);
                 int col = rand.nextInt(boardModel.getBoard()[row].length);
 
-                if (!boardModel.getBoard()[row][col].equals("[ ]")) {
-                    boardModel.removeValue(row, col); // Remove the number
+                if (!boardModel.getBoard()[row][col].isEmpty()) {
+                    boardModel.removeValue(row, col);
                     removed++;
                 }
             }
 
-            isNumberRemoved = false;
+            isNumberRemoved = true;
         }
     }
 
@@ -193,17 +203,17 @@ public class BoardController {
      *
      * @return true if the puzzle is complete, false otherwise.
      */
-    public boolean isGameCompleted() {
-
+    public void isGameCompleted() {
         for (int i = 0; i < boardModel.getBoard().length; i++) {
             for (int j = 0; j < boardModel.getBoard()[i].length; j++) {
-                if (boardModel.getBoard()[i][j].equals("[ ]")) {
-                    return false; // If any empty cell is found, the game is not completed
+                if (boardModel.getBoard()[i][j].equals("")) {
+                    isNumberRemoved = true;
+                    return;
                 }
             }
         }
-        System.out.println("You solved sudoku!!"); // Display message when the puzzle is completed
-        return true;
+        JOptionPane.showMessageDialog(null, "You solved sudoku!!");
+        isNumberRemoved = false;
     }
 
     /**

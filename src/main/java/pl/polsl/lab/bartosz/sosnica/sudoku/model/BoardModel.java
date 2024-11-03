@@ -2,6 +2,7 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -9,8 +10,6 @@ import java.util.Objects;
  * The BoardModel class represents the model of the Sudoku board.
  * It handles board setup, placement of values, validation of moves, and difficulty level management.
  * </p>
- * @author Bartosz Sośnica
- * @version 1.0
  */
 public class BoardModel {
 
@@ -22,7 +21,9 @@ public class BoardModel {
     /**
      * The difficulty level of the Sudoku game, represented by the number of cells to remove.
      */
-    private int difficultyLevel;
+    private String difficultyLevel;
+
+    private int numberDiff;
 
     /**
      * Constructor for BoardModel.
@@ -41,16 +42,18 @@ public class BoardModel {
         return board;
     }
 
+    public int getNumberDiff() {
+        return numberDiff;
+    }
+
     /**
-     * Initializes the board with empty cells represented by "[ ]".
+     * Initializes the board with empty cells represented by an empty string.
      */
     public void settingUpBoard() {
         board = new String[9][9];
 
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                board[i][j] = "[ ]"; // Set each cell to empty
-            }
+        for (String[] row : board) {
+            Arrays.fill(row, ""); // Set each cell to empty string
         }
     }
 
@@ -61,18 +64,18 @@ public class BoardModel {
      * @param col   the column index where the value should be placed.
      * @param value the value to place on the board.
      */
-    public void placeValue(int row, int col, int value) {
-        board[row][col] = "[" + value + "]"; // Place the value inside brackets
+    public void placeValue(int row, int col, String value) {
+        board[row][col] = value != null ? value : ""; // Place the value or empty string
     }
 
     /**
-     * Removes a value from the specified row and column on the board, setting it to "[ ]".
+     * Removes a value from the specified row and column on the board, setting it to an empty string.
      *
      * @param row the row index.
      * @param col the column index.
      */
     public void removeValue(int row, int col) {
-        board[row][col] = "[ ]";
+        board[row][col] = ""; // Set to empty string when removing a value
     }
 
     /**
@@ -83,12 +86,19 @@ public class BoardModel {
      * @param value the value to place.
      * @throws InvalidSudokuMoveException if the move is invalid (e.g., coordinates or value out of bounds).
      */
-    public void isValidNumber(int row, int col, int value) throws InvalidSudokuMoveException {
+    public void isValidNumber(int row, int col, String value) throws InvalidSudokuMoveException {
+
+        try{
+            Integer.parseInt(value);
+        }catch (NumberFormatException e){
+            throw new InvalidSudokuMoveException("Provided value must be a number");
+        }
+
         if (row > board.length - 1 || row < 0 || col > board.length - 1 || col < 0) {
             throw new InvalidSudokuMoveException("Coordinates out of bounds: row=" + row + ", col=" + col);
         }
 
-        if (value < 0 || value > 9) {
+        if (Integer.parseInt(value) < 1 || Integer.parseInt(value) > 9) {
             throw new InvalidSudokuMoveException("Value out of bounds");
         }
     }
@@ -102,17 +112,19 @@ public class BoardModel {
      * @param value the value to place.
      * @throws InvalidSudokuMoveException if the value is already present in the row or column.
      */
-    public void isValidPosition(int row, int col, int value) throws InvalidSudokuMoveException {
-        // Check if the value exists in the current row
+    public void isValidPosition(int row, int col, String value) throws InvalidSudokuMoveException {
+        // Sprawdź, czy wartość już istnieje w wierszu
         for (int i = 0; i < getBoard().length; i++) {
-            if (Objects.equals(getBoard()[row][i], "[" + value + "]")) {
+            String cellValue = getBoard()[row][i];
+            if (!Objects.equals(cellValue, "") && !cellValue.isEmpty() && Objects.equals(cellValue, String.valueOf(value))) {
                 throw new InvalidSudokuMoveException("Value already placed in row");
             }
         }
 
-        // Check if the value exists in the current column
+        // Sprawdź, czy wartość już istnieje w kolumnie
         for (int i = 0; i < getBoard().length; i++) {
-            if (Objects.equals(getBoard()[i][col], "[" + value + "]")) {
+            String cellValue = getBoard()[i][col];
+            if (!Objects.equals(cellValue, "") && !cellValue.isEmpty() && Objects.equals(cellValue, String.valueOf(value))) {
                 throw new InvalidSudokuMoveException("Value already placed in column");
             }
         }
@@ -127,14 +139,14 @@ public class BoardModel {
      * @param value the value to check.
      * @throws InvalidSudokuMoveException if the value is already present in the 3x3 subgrid.
      */
-    public void isValueIn3x3(int row, int col, int value) throws InvalidSudokuMoveException {
+    public void isValueIn3x3(int row, int col, String value) throws InvalidSudokuMoveException {
         int startRow = (row / 3) * 3;
         int startCol = (col / 3) * 3;
 
         // Check the 3x3 subgrid for the value
         for (int i = startRow; i < startRow + 3; i++) {
             for (int j = startCol; j < startCol + 3; j++) {
-                if (Objects.equals(getBoard()[i][j], "[" + value + "]")) {
+                if (Objects.equals(getBoard()[i][j], value)) {
                     throw new InvalidSudokuMoveException("Value already placed in 3x3 subgrid");
                 }
             }
@@ -185,7 +197,7 @@ public class BoardModel {
      *
      * @return the difficulty level as an integer.
      */
-    public int getDifficultyLevel() {
+    public String getDifficultyLevel() {
         return difficultyLevel;
     }
 
@@ -195,25 +207,24 @@ public class BoardModel {
      * @param diffLevel the difficulty level as a string, which is parsed into an integer.
      */
     public void settingDifficultyLevel(String diffLevel) {
-        this.difficultyLevel = convertDifficultyLevel(diffLevel);
+        this.difficultyLevel = diffLevel;
+        convertDifficultyLevel();
     }
 
-    private int convertDifficultyLevel(String diffLevel) {
-        int numberDiff = 20;
-        switch(diffLevel){
+    private void convertDifficultyLevel() {
+        switch(this.difficultyLevel){
             case "Easy": {
-                numberDiff = 10;
+                this.numberDiff = 10;
                 break;
             }
             case "Medium": {
-                numberDiff = 20;
+                this.numberDiff = 20;
                 break;
             }
             case "Hard": {
-                numberDiff = 30;
+                this.numberDiff = 30;
                 break;
             }
         }
-        return numberDiff;
     }
 }

@@ -33,7 +33,7 @@ public class GameController {
      * It clears the screen, displays the current state of the board, and processes the player's turn.
      */
     public void gameLoop() {
-        gameModel.getUserController().getBoardController().setSudokuGameView();
+//        gameModel.getUserController().getBoardController().setSudokuGameView();
     }
 
     /**
