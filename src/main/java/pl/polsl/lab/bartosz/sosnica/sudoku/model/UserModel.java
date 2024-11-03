@@ -10,7 +10,7 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
  * for setting and retrieving these values.
  * </p>
  * @author Bartosz Sośnica
- * @version 1.0
+ * @version 2.0
  */
 public class UserModel {
 
@@ -18,11 +18,6 @@ public class UserModel {
      * The player's username.
      */
     private String username;
-
-    /**
-     * The player's score.
-     */
-    private int score;
 
     /**
      * Sets the player's username.
@@ -41,25 +36,6 @@ public class UserModel {
      */
     public String getUsername() {
         return username;
-    }
-
-    /**
-     * Sets the player's score.
-     *
-     * @param score The new score for the player.
-     *              It should be a non-negative integer.
-     */
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    /**
-     * Returns the player's score.
-     *
-     * @return The current score of the player.
-     */
-    public int getScore() {
-        return score;
     }
 
     /**

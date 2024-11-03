@@ -10,6 +10,8 @@ import java.util.Objects;
  * The BoardModel class represents the model of the Sudoku board.
  * It handles board setup, placement of values, validation of moves, and difficulty level management.
  * </p>
+ * @author Bartosz Sośnica
+ * @version 2.0
  */
 public class BoardModel {
 
@@ -23,6 +25,14 @@ public class BoardModel {
      */
     private String difficultyLevel;
 
+    /**
+     * The current status of the game (e.g., "Solved", "Unsolved").
+     */
+    private String status;
+
+    /**
+     * The number of cells to remove based on the difficulty level.
+     */
     private int numberDiff;
 
     /**
@@ -42,6 +52,11 @@ public class BoardModel {
         return board;
     }
 
+    /**
+     * Returns the number of cells to remove based on the difficulty level.
+     *
+     * @return the number of cells to remove.
+     */
     public int getNumberDiff() {
         return numberDiff;
     }
@@ -51,10 +66,27 @@ public class BoardModel {
      */
     public void settingUpBoard() {
         board = new String[9][9];
+        status = "Unsolved";
 
         for (String[] row : board) {
             Arrays.fill(row, ""); // Set each cell to empty string
         }
+    }
+
+    /**
+     * Changes the status of the board to "Solved".
+     */
+    public void changeStatus() {
+        status = "Solved";
+    }
+
+    /**
+     * Returns the current status of the board.
+     *
+     * @return the status of the board.
+     */
+    public String getStatus() {
+        return status;
     }
 
     /**
@@ -79,7 +111,7 @@ public class BoardModel {
     }
 
     /**
-     * Checks if the specified value to be placed is valid based on the Sudoku rules.
+     * Checks if the specified value to be placed is valid based on Sudoku rules.
      *
      * @param row   the row index of the move.
      * @param col   the column index of the move.
@@ -87,19 +119,19 @@ public class BoardModel {
      * @throws InvalidSudokuMoveException if the move is invalid (e.g., coordinates or value out of bounds).
      */
     public void isValidNumber(int row, int col, String value) throws InvalidSudokuMoveException {
-
-        try{
+        try {
             Integer.parseInt(value);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new InvalidSudokuMoveException("Provided value must be a number");
         }
 
-        if (row > board.length - 1 || row < 0 || col > board.length - 1 || col < 0) {
+        if (row < 0 || row >= board.length || col < 0 || col >= board.length) {
             throw new InvalidSudokuMoveException("Coordinates out of bounds: row=" + row + ", col=" + col);
         }
 
-        if (Integer.parseInt(value) < 1 || Integer.parseInt(value) > 9) {
-            throw new InvalidSudokuMoveException("Value out of bounds");
+        int intValue = Integer.parseInt(value);
+        if (intValue < 1 || intValue > 9) {
+            throw new InvalidSudokuMoveException("Value out of bounds. Must be between 1 and 9.");
         }
     }
 
@@ -113,18 +145,18 @@ public class BoardModel {
      * @throws InvalidSudokuMoveException if the value is already present in the row or column.
      */
     public void isValidPosition(int row, int col, String value) throws InvalidSudokuMoveException {
-        // Sprawdź, czy wartość już istnieje w wierszu
+        // Check if the value already exists in the row
         for (int i = 0; i < getBoard().length; i++) {
             String cellValue = getBoard()[row][i];
-            if (!Objects.equals(cellValue, "") && !cellValue.isEmpty() && Objects.equals(cellValue, String.valueOf(value))) {
+            if (!cellValue.isEmpty() && Objects.equals(cellValue, value)) {
                 throw new InvalidSudokuMoveException("Value already placed in row");
             }
         }
 
-        // Sprawdź, czy wartość już istnieje w kolumnie
+        // Check if the value already exists in the column
         for (int i = 0; i < getBoard().length; i++) {
             String cellValue = getBoard()[i][col];
-            if (!Objects.equals(cellValue, "") && !cellValue.isEmpty() && Objects.equals(cellValue, String.valueOf(value))) {
+            if (!cellValue.isEmpty() && Objects.equals(cellValue, value)) {
                 throw new InvalidSudokuMoveException("Value already placed in column");
             }
         }
@@ -195,7 +227,7 @@ public class BoardModel {
     /**
      * Returns the current difficulty level of the Sudoku game.
      *
-     * @return the difficulty level as an integer.
+     * @return the difficulty level as a string.
      */
     public String getDifficultyLevel() {
         return difficultyLevel;
@@ -211,20 +243,23 @@ public class BoardModel {
         convertDifficultyLevel();
     }
 
+    /**
+     * Converts the difficulty level string to an integer representing the number of cells to remove.
+     */
     private void convertDifficultyLevel() {
-        switch(this.difficultyLevel){
-            case "Easy": {
-                this.numberDiff = 10;
+        switch (this.difficultyLevel) {
+            case "Easy":
+                this.numberDiff = 3;
                 break;
-            }
-            case "Medium": {
-                this.numberDiff = 20;
+            case "Medium":
+                this.numberDiff = 25;
                 break;
-            }
-            case "Hard": {
-                this.numberDiff = 30;
+            case "Hard":
+                this.numberDiff = 35;
                 break;
-            }
+            default:
+                this.numberDiff = 15; // Default value if an unrecognized level is provided
+                break;
         }
     }
 }

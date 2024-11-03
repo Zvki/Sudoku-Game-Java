@@ -1,11 +1,8 @@
-
-Bartek 2024-11-02 Hard
-Bartek 2024-11-02 Hard
-Bartek 2024-11-03 Easy
-Bartek 2024-11-03 Easy
-Anita 2024-11-03 Medium
-Anita 2024-11-03 Medium
-Anita 2024-11-03 Medium
-Artur 2024-11-03 Hard
-Artur 2024-11-03 Hard
-Bartosz 2024-11-03 Medium
+Justyn 2024-11-03 Easy Unsolved
+bartek 2024-11-03 Easy Solved
+Tomek 2024-11-03 Easy Solved
+Mateusz 2024-11-03 Easy Unsolved
+Anita 2024-11-03 Hard Unsolved
+Artur 2024-11-03 Medium Unsolved
+Janek 2024-11-03 Easy Solved
+Janek 2024-11-03 Easy Unsolved

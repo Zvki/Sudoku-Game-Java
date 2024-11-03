@@ -24,7 +24,7 @@ public class Main {
      * @param args command-line arguments provided to the application. The expected order is:
      *             <ul>
      *             <li>args[0] - the username (String)</li>
-     *             <li>args[1] - the difficulty level (String: how many numbers from board should be removed)</li>
+     *             <li>args[1] - the difficulty level (String: "Easy", "Medium", "Hard")</li>
      *             </ul>
      */
     public static void main(String[] args) {

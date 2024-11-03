@@ -9,7 +9,6 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 
 import javax.swing.*;
 import java.io.*;
-import java.time.LocalDate;
 import java.util.Scanner;
 
 /**
@@ -18,8 +17,12 @@ import java.util.Scanner;
  * It handles setting up the user, processing their input, and managing game turns.
  * </p>
  *
- * @author Bartosz Sośnica
- * @version 2.0
+ * <p>
+ * This controller interacts with the UserModel, BoardController, and various views to facilitate
+ * the Sudoku game experience.
+ * </p>
+ *
+ * @version 2.1
  */
 public class MainController {
 
@@ -34,16 +37,17 @@ public class MainController {
     private BoardController boardController;
 
     /**
-     * The view responsible for interacting with the user.
+     * The view responsible for interacting with the user through console input.
      */
     private UserView userView;
 
+    /**
+     * The view for user input in a graphical interface.
+     */
     private UserInputGuiView userInputGuiView;
 
-    private SudokuGameView sudokuGameView;
-
     /**
-     * Returns the instance of the BoardController associated with the current UserController.
+     * Returns the instance of the BoardController associated with the current MainController.
      *
      * @return The BoardController instance that manages the game board.
      */
@@ -52,8 +56,7 @@ public class MainController {
     }
 
     /**
-     * Returns the instance of the UserView associated with the current UserController.
-     * This view is responsible for interacting with the user.
+     * Returns the instance of the UserView associated with the current MainController.
      *
      * @return The UserView instance used for user interactions.
      */
@@ -62,35 +65,29 @@ public class MainController {
     }
 
     /**
-     * Default constructor for UserController.
-     * Initializes the UserView and BoardController.
+     * Default constructor for MainController.
+     * Initializes the BoardController and UserModel.
      */
     public MainController() {
-    //    this.userView = new UserView();
         this.boardController = new BoardController();
         this.userModel = new UserModel();
     }
 
-    public UserModel getUserModel(){
+    public UserModel getUserModel() {
         return userModel;
     }
 
-    public UserInputGuiView getUserInputGuiView(){
+    public UserInputGuiView getUserInputGuiView() {
         return userInputGuiView;
     }
 
-    public SudokuGameView getSudokuGameView() {
-        return sudokuGameView;
-    }
-
     /**
-     * Sets up the user by retrieving the username and difficulty level.
+     * Sets up the user by retrieving the username and difficulty level from command-line arguments.
      *
      * @param args command-line arguments containing the username and difficulty level.
      */
     public void settingUpUser(String[] args) {
         // Retrieve and set the username
-        this.userModel = new UserModel();
         this.userModel.setUsername(getUsernameInput(args));
 
         // Welcome the player
@@ -100,8 +97,13 @@ public class MainController {
         this.boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
     }
 
-    public void GameSetUp(String[] args){
-        try{
+    /**
+     * Sets up the game by checking the user's input and initializing the game state.
+     *
+     * @param args command-line arguments containing user information.
+     */
+    public void GameSetUp(String[] args) {
+        try {
             userModel.checkUsernameInput(args);
             userModel.setUsername(args[0]);
             boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
@@ -179,7 +181,10 @@ public class MainController {
         return move;
     }
 
-    public void handleLogin(){
+    /**
+     * Handles the login process through a GUI, allowing the user to input their username and difficulty level.
+     */
+    public void handleLogin() {
         userInputGuiView.addSubmitButtonListener(e -> {
             String username = userInputGuiView.getUsername();
             String difficulty = userInputGuiView.getDifficulty();
@@ -190,8 +195,7 @@ public class MainController {
             JOptionPane.showMessageDialog(null, "Welcome, " + username + "! Difficulty Level: " + difficulty);
 
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(userInputGuiView.getSubmitButton());
-            boardController.setSudokuGameView();
-            saveGameRecordToFile();
+            boardController.setSudokuGameView(getUserModel());
             if (frame != null) {
                 frame.dispose();
             }
@@ -208,7 +212,6 @@ public class MainController {
      * @return The valid integer input provided by the user.
      */
     private int getUserMoveInput(Scanner inputUser) {
-
         while (true) {
             try {
                 return userModel.isInputNumber(inputUser.nextLine());
@@ -218,32 +221,24 @@ public class MainController {
         }
     }
 
+    /**
+     * Loads game records from a specified file and updates the GUI with the retrieved records.
+     */
     public void loadGameRecordsFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\JAVA_PROJECTS\\JWUIM_LAB\\exercise1a\\PROJECT_SUDOKU\\src\\main\\java\\pl\\polsl\\lab\\bartosz\\sosnica\\sudoku\\resources\\gamehistory.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("D:\\JAVA.PROJECTS\\PROJECT_SUDOKU\\src\\main\\java\\pl\\polsl\\lab\\bartosz\\sosnica\\sudoku\\resources\\gamehistory.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(" "); // Zakładając, że dane są oddzielone przecinkiem
-                if (data.length >= 3) {
+                String[] data = line.split(" ");
+                if (data.length >= 4) { // Ensure there are enough fields
                     String username = data[0];
                     String date = data[1];
                     String difficulty = data[2];
-                    userInputGuiView.addGameRecord(username, date, difficulty); // Możesz dostosować status
+                    String status = data[3];
+                    userInputGuiView.addGameRecord(username, date, difficulty, status);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    public void saveGameRecordToFile() {
-        LocalDate currentDate = LocalDate.now();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\JAVA_PROJECTS\\JWUIM_LAB\\exercise1a\\PROJECT_SUDOKU\\src\\main\\java\\pl\\polsl\\lab\\bartosz\\sosnica\\sudoku\\resources\\gamehistory.txt", true))) {
-            writer.write(userModel.getUsername() + " " + currentDate + " " + boardController.getBoardModel().getDifficultyLevel());
-            writer.newLine(); // Dodaj nową linię po każdym wpisie
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }

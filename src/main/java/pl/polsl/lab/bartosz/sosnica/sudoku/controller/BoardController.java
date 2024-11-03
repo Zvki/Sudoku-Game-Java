@@ -2,28 +2,44 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
 
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
+import pl.polsl.lab.bartosz.sosnica.sudoku.model.UserModel;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.SudokuGameView;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
  * <p>
- * The BoardController class is responsible for managing the Sudoku board.
- * It handles board setup, validation of moves, and game progress checking.
+ * The BoardController class is responsible for managing the Sudoku game.
+ * It handles board setup, validation of moves, game progress checking, and saving game history.
  * </p>
- * @author Bartosz Sośnica
- * @version 2.0
+ * <p>
+ * This class interacts with the BoardModel to manage the board data,
+ * SudokuGameView for UI interactions, and UserModel to track the user's progress and preferences.
+ * </p>
+ * @version 2.4
  */
 public class BoardController {
 
     /**
+     * Flag indicating whether the Sudoku board has been set up.
+     */
+    private boolean isSudokuSet = false;
+
+    /**
      * The model representing the Sudoku board.
      */
-    private boolean isNumberRemoved = false;
-
     private BoardModel boardModel;
 
+    /**
+     * The view for displaying the Sudoku game.
+     */
     private SudokuGameView sudokuGameView;
 
     /**
@@ -35,7 +51,12 @@ public class BoardController {
         return boardModel;
     }
 
-    public SudokuGameView getSudokuGameView(){
+    /**
+     * Returns the Sudoku game view.
+     *
+     * @return the SudokuGameView object.
+     */
+    public SudokuGameView getSudokuGameView() {
         return sudokuGameView;
     }
 
@@ -47,12 +68,22 @@ public class BoardController {
         boardModel = new BoardModel();
     }
 
-    public void setSudokuGameView(){
+    /**
+     * Sets up the Sudoku game view and initializes listeners for UI interactions.
+     *
+     * @param userModel the UserModel object representing the user.
+     */
+    public void setSudokuGameView(UserModel userModel) {
         sudokuGameView = new SudokuGameView();
-        initializeListeners();
+        initializeListeners(userModel);
     }
 
-    public void initializeListeners(){
+    /**
+     * Initializes listeners for buttons and window events in the Sudoku game view.
+     *
+     * @param userModel the UserModel object representing the user.
+     */
+    public void initializeListeners(UserModel userModel) {
         sudokuGameView.addStartButtonListener(e -> {
             settingUpSudoku();
             updateBoard(sudokuGameView.getBoardPanel());
@@ -61,23 +92,38 @@ public class BoardController {
         sudokuGameView.addAddValueButtonListener(e -> {
             readUserInput();
             updateBoard(sudokuGameView.getBoardPanel());
-            isGameCompleted();
+            isGameCompleted(userModel);
+        });
+
+        sudokuGameView.addWindowCloseListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                onCloseRequest(userModel);
+            }
         });
     }
 
+    /**
+     * Updates the visual board in the Sudoku game view to reflect the current board model.
+     *
+     * @param panel the JPanel containing the Sudoku grid.
+     */
     private void updateBoard(JPanel panel) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                JTextField cell = sudokuGameView.getCellAt(i, j); // Uzyskujemy komórkę za pomocą getCellAt
+                JTextField cell = sudokuGameView.getCellAt(i, j);
                 String value = getBoardModel().getBoard()[i][j];
-                cell.setText(value != null ? value : ""); // Ustawia "" jeśli wartość jest null
-                cell.setEditable(value.isEmpty()); // Umożliwia edycję tylko pustych komórek
+                cell.setText(value != null ? value : "");
+                cell.setEditable(value.isEmpty());
             }
         }
     }
 
+    /**
+     * Reads user input from the view, validates, and updates the board accordingly.
+     * Displays error messages if the user makes invalid moves.
+     */
     private void readUserInput() {
-        // Przechodzimy przez komórki w układzie 3x3
         for (int blockRow = 0; blockRow < 3; blockRow++) {
             for (int blockCol = 0; blockCol < 3; blockCol++) {
                 for (int row = 0; row < 3; row++) {
@@ -87,12 +133,10 @@ public class BoardController {
                         JTextField cell = sudokuGameView.getCellAt(i, j);
                         String userInput = cell.getText().trim();
 
-                        // Sprawdź, czy wpis jest niepusty i różni się od bieżącej wartości w tablicy
                         if (!userInput.isEmpty() && !userInput.equals(getBoardModel().getBoard()[i][j])) {
                             try {
-                                // Sprawdzamy poprawność tylko dla zmienionej wartości
                                 isMoveValid(i, j, userInput);
-                                getBoardModel().placeValue(i, j, userInput); // Ustawiamy nową wartość na planszy
+                                getBoardModel().placeValue(i, j, userInput);
                             } catch (InvalidSudokuMoveException e) {
                                 JOptionPane.showMessageDialog(null, e.getMessage());
                             }
@@ -104,17 +148,18 @@ public class BoardController {
     }
 
     /**
-     * Sets up the Sudoku game by filling the board with numbers and removing some based on difficulty.
+     * Sets up the Sudoku game by preparing the board and removing cells based on difficulty level.
      */
     public void settingUpSudoku() {
-        // Fill the board with numbers
-        fillingUpBoard();
-        // Remove numbers based on the chosen difficulty level
-        removeNumbers(boardModel.getNumberDiff());
+        if (!isSudokuSet) {
+            getBoardModel().settingUpBoard();
+            fillingUpBoard();
+            removeNumbers(boardModel.getNumberDiff());
+        }
     }
 
     /**
-     * Validates the move to ensure it adheres to Sudoku rules.
+     * Validates if a move is valid according to Sudoku rules.
      *
      * @param row the row index of the move.
      * @param col the column index of the move.
@@ -122,23 +167,20 @@ public class BoardController {
      * @throws InvalidSudokuMoveException if the move violates Sudoku rules.
      */
     public void isMoveValid(int row, int col, String value) throws InvalidSudokuMoveException {
-
         boardModel.isValidNumber(row, col, value);
         boardModel.isValidPosition(row, col, value);
         boardModel.isValueIn3x3(row, col, value);
-
     }
 
     /**
-     * Fills up the Sudoku board with valid numbers using backtracking.
+     * Fills up the Sudoku board with valid numbers using a backtracking algorithm.
      */
     public void fillingUpBoard() {
         fill(0, 0);
     }
 
     /**
-     * Recursively fills the board starting from the specified row and column.
-     * Uses a backtracking algorithm to generate a valid Sudoku board.
+     * Recursively fills the board starting from the specified row and column using backtracking.
      *
      * @param row the starting row index.
      * @param col the starting column index.
@@ -149,87 +191,117 @@ public class BoardController {
         if (col == boardModel.getBoard()[row].length) return fill(row + 1, 0);
 
         ArrayList<Integer> numbers = new ArrayList<>();
-        for(int i = 1; i <= boardModel.getBoard().length; i++){
+        for (int i = 1; i <= boardModel.getBoard().length; i++) {
             numbers.add(i);
         }
         Collections.shuffle(numbers);
 
-        for(int number : numbers){
-
-            try{
-                isMoveValid(row,col,String.valueOf(number));
+        for (int number : numbers) {
+            try {
+                isMoveValid(row, col, String.valueOf(number));
                 boardModel.placeValue(row, col, String.valueOf(number));
 
-                if(fill(row, col + 1)){
+                if (fill(row, col + 1)) {
                     return true;
                 }
 
                 boardModel.removeValue(row, col);
-            } catch (InvalidSudokuMoveException e){
-                // Exception handling: skip invalid moves
+            } catch (InvalidSudokuMoveException e) {
+                // Skip invalid moves
             }
         }
 
         return false;
-
     }
 
     /**
-     * Removes numbers from the board to create the puzzle based on the difficulty level.
+     * Removes a specified number of cells from the board based on difficulty level to create the puzzle.
      *
      * @param numbersRemoved the number of cells to remove.
      */
     private void removeNumbers(int numbersRemoved) {
-        if (!isNumberRemoved) {
-            Random rand = new Random();
-            int removed = 0;
+        Random rand = new Random();
+        int removed = 0;
+        while (removed < numbersRemoved) {
+            int row = rand.nextInt(boardModel.getBoard().length);
+            int col = rand.nextInt(boardModel.getBoard()[row].length);
 
-            while (removed < numbersRemoved) {
-                int row = rand.nextInt(boardModel.getBoard().length);
-                int col = rand.nextInt(boardModel.getBoard()[row].length);
-
-                if (!boardModel.getBoard()[row][col].isEmpty()) {
-                    boardModel.removeValue(row, col);
-                    removed++;
-                }
+            if (!boardModel.getBoard()[row][col].isEmpty()) {
+                boardModel.removeValue(row, col);
+                removed++;
             }
-
-            isNumberRemoved = true;
         }
+        isSudokuSet = true;
     }
 
     /**
      * Checks if the Sudoku puzzle has been completed by the player.
+     * Displays a message if the game is successfully completed.
      *
-     * @return true if the puzzle is complete, false otherwise.
+     * @param userModel the UserModel object representing the user.
      */
-    public void isGameCompleted() {
+    public void isGameCompleted(UserModel userModel) {
         for (int i = 0; i < boardModel.getBoard().length; i++) {
             for (int j = 0; j < boardModel.getBoard()[i].length; j++) {
                 if (boardModel.getBoard()[i][j].equals("")) {
-                    isNumberRemoved = true;
+                    isSudokuSet = true;
                     return;
                 }
             }
         }
         JOptionPane.showMessageDialog(null, "You solved sudoku!!");
-        isNumberRemoved = false;
+        getBoardModel().changeStatus();
+        saveGameRecordToFile(userModel);
+        isSudokuSet = false;
     }
 
     /**
-     * Retrieves the difficulty level input from the command-line arguments.
-     * If the input is invalid, prompts the user to input the difficulty level again via console.
+     * Handles actions for closing the window, prompting the user for confirmation,
+     * and saving the game history.
+     *
+     * @param userModel the UserModel object representing the user.
+     */
+    private void onCloseRequest(UserModel userModel) {
+        int response = JOptionPane.showConfirmDialog(
+                sudokuGameView,
+                "Are you sure you want to close the window?",
+                "Confirmation",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (response == JOptionPane.YES_OPTION) {
+            sudokuGameView.dispose();
+            saveGameRecordToFile(userModel);
+        }
+    }
+
+    /**
+     * Saves the game record to a file, including the username, date, difficulty level, and game status.
+     *
+     * @param userModel the UserModel object representing the user.
+     */
+    public void saveGameRecordToFile(UserModel userModel) {
+        LocalDate currentDate = LocalDate.now();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\JAVA.PROJECTS\\PROJECT_SUDOKU\\src\\main\\java\\pl\\polsl\\lab\\bartosz\\sosnica\\sudoku\\resources\\gamehistory.txt", true))) {
+            writer.write(userModel.getUsername() + " " + currentDate + " " + getBoardModel().getDifficultyLevel() + " " + getBoardModel().getStatus());
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Retrieves the difficulty level from command-line arguments.
+     * If invalid, prompts the user to enter the difficulty level.
      *
      * @param args the command-line arguments.
      * @return a valid difficulty level.
      */
     public String getDifficultyLevelInput(String[] args) {
         try {
-            // Check if the difficulty level is provided
             getBoardModel().checkDifficultyInput(args);
             return args[1];
         } catch (InvalidSudokuMoveException e) {
-            // Handle missing or invalid difficulty input
             System.out.println(e.getMessage());
             return getDifficultyLevelInputConsole();
         }
@@ -241,23 +313,20 @@ public class BoardController {
      * @return a valid difficulty level as a String.
      */
     public String getDifficultyLevelInputConsole() {
-
-        Scanner inputUser = new Scanner(System.in); // Move Scanner outside of the loop
+        Scanner inputUser = new Scanner(System.in);
         String diffLevel;
 
-        while (true) { // Loop until a valid difficulty level is provided
-
-            diffLevel = inputUser.nextLine(); // Get user input
+        while (true) {
+            diffLevel = inputUser.nextLine();
 
             try {
-                getBoardModel().isDiffLvlNumber(diffLevel); // Validate the input
+                getBoardModel().isDiffLvlNumber(diffLevel);
                 getBoardModel().isDiffLvlCorrect(diffLevel);
-                break; // Exit the loop if input is valid
+                break;
             } catch (InvalidSudokuMoveException e) {
-                System.out.println(e.getMessage()); // Display error message
+                System.out.println(e.getMessage());
             }
         }
-        return diffLevel; // Return the valid difficulty level
-
+        return diffLevel;
     }
 }

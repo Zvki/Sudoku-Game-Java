@@ -7,12 +7,12 @@
  * <ul>
  *     <li>BoardController: Manages the game board.</li>
  *     <li>GameController: Oversees the overall game flow.</li>
- *     <li>UserController: Manages user-related interactions.</li>
+ *     <li>MainController: Manages user-related interactions.</li>
  * </ul>
  *
  * @since 1.0
  * @author Bartosz Sośnica
- * @version 1.0
+ * @version 1.1
  */
 
 package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
