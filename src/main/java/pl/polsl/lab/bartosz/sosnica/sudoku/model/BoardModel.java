@@ -1,9 +1,12 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -13,63 +16,67 @@ import java.util.Objects;
  * @author Bartosz Sośnica
  * @version 2.0
  */
+
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class BoardModel {
 
     /**
      * A 2D array representing the Sudoku board, where each cell contains a string representing a value.
+     * -- GETTER --
+     *  Returns the current state of the board.
+     *
+     * @return the 2D array representing the board.
+
      */
-    private String[][] board;
+    //private String[][] board;
+
+    private List<List<BoardCell>> board;
 
     /**
      * The difficulty level of the Sudoku game, represented by the number of cells to remove.
+     * -- GETTER --
+     *  Returns the current difficulty level of the Sudoku game.
+     *
+     * @return the difficulty level as a string.
+
      */
     private String difficultyLevel;
 
     /**
      * The current status of the game (e.g., "Solved", "Unsolved").
+     * -- GETTER --
+     *  Returns the current status of the board.
+     *
+     * @return the status of the board.
+
      */
     private String status;
 
     /**
      * The number of cells to remove based on the difficulty level.
+     * -- GETTER --
+     *  Returns the number of cells to remove based on the difficulty level.
+     *
+     * @return the number of cells to remove.
+
      */
     private int numberDiff;
 
-    /**
-     * Constructor for BoardModel.
-     * Initializes the board by calling the settingUpBoard method.
-     */
-    public BoardModel() {
-        settingUpBoard();
-    }
-
-    /**
-     * Returns the current state of the board.
-     *
-     * @return the 2D array representing the board.
-     */
-    public String[][] getBoard() {
-        return board;
-    }
-
-    /**
-     * Returns the number of cells to remove based on the difficulty level.
-     *
-     * @return the number of cells to remove.
-     */
-    public int getNumberDiff() {
-        return numberDiff;
-    }
+    public record BoardCell(String value){};
 
     /**
      * Initializes the board with empty cells represented by an empty string.
      */
     public void settingUpBoard() {
-        board = new String[9][9];
+        board = new ArrayList<>(9);
         status = "Unsolved";
 
-        for (String[] row : board) {
-            Arrays.fill(row, ""); // Set each cell to empty string
+        for (int i = 0; i < 9; i++) {
+            List<BoardCell> row = new ArrayList<>(Collections.nCopies(9, new BoardCell("")));
+            board.add(row);
         }
     }
 
@@ -81,15 +88,6 @@ public class BoardModel {
     }
 
     /**
-     * Returns the current status of the board.
-     *
-     * @return the status of the board.
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
      * Places a value at the specified row and column on the board.
      *
      * @param row   the row index where the value should be placed.
@@ -97,7 +95,7 @@ public class BoardModel {
      * @param value the value to place on the board.
      */
     public void placeValue(int row, int col, String value) {
-        board[row][col] = value != null ? value : ""; // Place the value or empty string
+        board.get(row).set(col, new BoardCell(value != null ? value : ""));
     }
 
     /**
@@ -107,7 +105,7 @@ public class BoardModel {
      * @param col the column index.
      */
     public void removeValue(int row, int col) {
-        board[row][col] = ""; // Set to empty string when removing a value
+        board.get(row).set(col, new BoardCell(""));
     }
 
     /**
@@ -125,7 +123,7 @@ public class BoardModel {
             throw new InvalidSudokuMoveException("Provided value must be a number");
         }
 
-        if (row < 0 || row >= board.length || col < 0 || col >= board.length) {
+        if (row < 0 || row >= board.size() || col < 0 || col >= board.size()) {
             throw new InvalidSudokuMoveException("Coordinates out of bounds: row=" + row + ", col=" + col);
         }
 
@@ -145,17 +143,15 @@ public class BoardModel {
      * @throws InvalidSudokuMoveException if the value is already present in the row or column.
      */
     public void isValidPosition(int row, int col, String value) throws InvalidSudokuMoveException {
-        // Check if the value already exists in the row
-        for (int i = 0; i < getBoard().length; i++) {
-            String cellValue = getBoard()[row][i];
+        for (int i = 0; i < board.size(); i++) {
+            String cellValue = board.get(row).get(i).value();
             if (!cellValue.isEmpty() && Objects.equals(cellValue, value)) {
                 throw new InvalidSudokuMoveException("Value already placed in row");
             }
         }
 
-        // Check if the value already exists in the column
-        for (int i = 0; i < getBoard().length; i++) {
-            String cellValue = getBoard()[i][col];
+        for (List<BoardCell> boardCells : board) {
+            String cellValue = boardCells.get(col).value();
             if (!cellValue.isEmpty() && Objects.equals(cellValue, value)) {
                 throw new InvalidSudokuMoveException("Value already placed in column");
             }
@@ -178,7 +174,7 @@ public class BoardModel {
         // Check the 3x3 subgrid for the value
         for (int i = startRow; i < startRow + 3; i++) {
             for (int j = startCol; j < startCol + 3; j++) {
-                if (Objects.equals(getBoard()[i][j], value)) {
+                if (Objects.equals(board.get(i).get(j).value(), value)) {
                     throw new InvalidSudokuMoveException("Value already placed in 3x3 subgrid");
                 }
             }
@@ -225,15 +221,6 @@ public class BoardModel {
     }
 
     /**
-     * Returns the current difficulty level of the Sudoku game.
-     *
-     * @return the difficulty level as a string.
-     */
-    public String getDifficultyLevel() {
-        return difficultyLevel;
-    }
-
-    /**
      * Sets the difficulty level of the Sudoku game based on the provided string.
      *
      * @param diffLevel the difficulty level as a string, which is parsed into an integer.
@@ -262,4 +249,5 @@ public class BoardModel {
                 break;
         }
     }
+
 }

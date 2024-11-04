@@ -1,9 +1,9 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
 
+import lombok.Getter;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.UserModel;
-import pl.polsl.lab.bartosz.sosnica.sudoku.view.SudokuGameView;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserInputGuiView;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
 
@@ -24,6 +24,7 @@ import java.util.Scanner;
  *
  * @version 2.1
  */
+@Getter
 public class MainController {
 
     /**
@@ -33,11 +34,21 @@ public class MainController {
 
     /**
      * The controller responsible for managing the game board.
+     * -- GETTER --
+     *  Returns the instance of the BoardController associated with the current MainController.
+     *
+     * @return The BoardController instance that manages the game board.
+
      */
     private BoardController boardController;
 
     /**
      * The view responsible for interacting with the user through console input.
+     * -- GETTER --
+     *  Returns the instance of the UserView associated with the current MainController.
+     *
+     * @return The UserView instance used for user interactions.
+
      */
     private UserView userView;
 
@@ -45,24 +56,6 @@ public class MainController {
      * The view for user input in a graphical interface.
      */
     private UserInputGuiView userInputGuiView;
-
-    /**
-     * Returns the instance of the BoardController associated with the current MainController.
-     *
-     * @return The BoardController instance that manages the game board.
-     */
-    public BoardController getBoardController() {
-        return boardController;
-    }
-
-    /**
-     * Returns the instance of the UserView associated with the current MainController.
-     *
-     * @return The UserView instance used for user interactions.
-     */
-    public UserView getUserView() {
-        return userView;
-    }
 
     /**
      * Default constructor for MainController.
@@ -73,27 +66,17 @@ public class MainController {
         this.userModel = new UserModel();
     }
 
-    public UserModel getUserModel() {
-        return userModel;
-    }
-
-    public UserInputGuiView getUserInputGuiView() {
-        return userInputGuiView;
-    }
-
     /**
      * Sets up the user by retrieving the username and difficulty level from command-line arguments.
      *
      * @param args command-line arguments containing the username and difficulty level.
      */
     public void settingUpUser(String[] args) {
-        // Retrieve and set the username
+        
         this.userModel.setUsername(getUsernameInput(args));
 
-        // Welcome the player
         userView.displayMessage("Welcome, " + this.userModel.getUsername() + "!");
 
-        // Set the difficulty level for the game
         this.boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
     }
 
@@ -107,6 +90,7 @@ public class MainController {
             userModel.checkUsernameInput(args);
             userModel.setUsername(args[0]);
             boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
+            boardController.setSudokuGameView(userModel);
         } catch (InvalidUserInputException e) {
             userInputGuiView = new UserInputGuiView();
             handleLogin();

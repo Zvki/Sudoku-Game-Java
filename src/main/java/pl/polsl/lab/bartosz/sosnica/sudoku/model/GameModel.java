@@ -10,6 +10,7 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.controller.MainController;
  * @author Bartosz Sośnica
  * @version 2.0
  */
+
 public class GameModel {
 
     /**

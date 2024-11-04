@@ -1,5 +1,6 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
 
+import lombok.Getter;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.UserModel;
@@ -34,7 +35,13 @@ public class BoardController {
 
     /**
      * The model representing the Sudoku board.
+     * -- GETTER --
+     *  Returns the current board model.
+     *
+     * @return the BoardModel object.
+
      */
+    @Getter
     private BoardModel boardModel;
 
     /**
@@ -43,22 +50,13 @@ public class BoardController {
     private SudokuGameView sudokuGameView;
 
     /**
-     * Returns the current board model.
-     *
-     * @return the BoardModel object.
-     */
-    public BoardModel getBoardModel() {
-        return boardModel;
-    }
-
-    /**
      * Returns the Sudoku game view.
      *
      * @return the SudokuGameView object.
      */
-    public SudokuGameView getSudokuGameView() {
-        return sudokuGameView;
-    }
+//    public SudokuGameView getSudokuGameView() {
+//        return sudokuGameView;
+//    }
 
     /**
      * Default constructor for BoardController.
@@ -112,7 +110,7 @@ public class BoardController {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 JTextField cell = sudokuGameView.getCellAt(i, j);
-                String value = getBoardModel().getBoard()[i][j];
+                String value = getBoardModel().getBoard().get(i).get(j).value();
                 cell.setText(value != null ? value : "");
                 cell.setEditable(value.isEmpty());
             }
@@ -133,7 +131,7 @@ public class BoardController {
                         JTextField cell = sudokuGameView.getCellAt(i, j);
                         String userInput = cell.getText().trim();
 
-                        if (!userInput.isEmpty() && !userInput.equals(getBoardModel().getBoard()[i][j])) {
+                        if (!userInput.isEmpty() && !userInput.equals(getBoardModel().getBoard().get(i).get(j).value())) {
                             try {
                                 isMoveValid(i, j, userInput);
                                 getBoardModel().placeValue(i, j, userInput);
@@ -187,11 +185,11 @@ public class BoardController {
      * @return true if the board is successfully filled, false otherwise.
      */
     private boolean fill(int row, int col) {
-        if (row == boardModel.getBoard().length) return true;
-        if (col == boardModel.getBoard()[row].length) return fill(row + 1, 0);
+        if (row == boardModel.getBoard().size()) return true;
+        if (col == boardModel.getBoard().get(row).size()) return fill(row + 1, 0);
 
         ArrayList<Integer> numbers = new ArrayList<>();
-        for (int i = 1; i <= boardModel.getBoard().length; i++) {
+        for (int i = 1; i <= boardModel.getBoard().size(); i++) {
             numbers.add(i);
         }
         Collections.shuffle(numbers);
@@ -223,10 +221,10 @@ public class BoardController {
         Random rand = new Random();
         int removed = 0;
         while (removed < numbersRemoved) {
-            int row = rand.nextInt(boardModel.getBoard().length);
-            int col = rand.nextInt(boardModel.getBoard()[row].length);
+            int row = rand.nextInt(boardModel.getBoard().size());
+            int col = rand.nextInt(boardModel.getBoard().get(row).size());
 
-            if (!boardModel.getBoard()[row][col].isEmpty()) {
+            if (!boardModel.getBoard().get(row).get(col).value().isEmpty()) {
                 boardModel.removeValue(row, col);
                 removed++;
             }
@@ -241,9 +239,9 @@ public class BoardController {
      * @param userModel the UserModel object representing the user.
      */
     public void isGameCompleted(UserModel userModel) {
-        for (int i = 0; i < boardModel.getBoard().length; i++) {
-            for (int j = 0; j < boardModel.getBoard()[i].length; j++) {
-                if (boardModel.getBoard()[i][j].equals("")) {
+        for (int i = 0; i < boardModel.getBoard().size(); i++) {
+            for (int j = 0; j < boardModel.getBoard().get(i).size(); j++) {
+                if (boardModel.getBoard().get(i).get(j).value().isEmpty()) {
                     isSudokuSet = true;
                     return;
                 }
@@ -329,4 +327,5 @@ public class BoardController {
         }
         return diffLevel;
     }
+
 }

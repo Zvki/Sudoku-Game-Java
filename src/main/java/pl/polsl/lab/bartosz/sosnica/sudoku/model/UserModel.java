@@ -1,5 +1,7 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
 
 /**
@@ -12,31 +14,25 @@ import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
  * @author Bartosz Sośnica
  * @version 2.0
  */
+@Setter
+@Getter
 public class UserModel {
 
     /**
      * The player's username.
+     * -- GETTER --
+     *  Returns the player's username.
+     *
+     *
+     * -- SETTER --
+     *  Sets the player's username.
+     *
+     @return The username of the player.
+      * @param username The new username for the player.
+      *                 It should not be null or empty.
+
      */
     private String username;
-
-    /**
-     * Sets the player's username.
-     *
-     * @param username The new username for the player.
-     *                 It should not be null or empty.
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * Returns the player's username.
-     *
-     * @return The username of the player.
-     */
-    public String getUsername() {
-        return username;
-    }
 
     /**
      * Validates the input for the username. Ensures that the user provides

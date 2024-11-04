@@ -2,6 +2,8 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.view;
 
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
 
+import java.util.List;
+
 /**
  * <p>
  * Class responsible for user interaction in the console-based Sudoku game.
@@ -23,11 +25,11 @@ public class UserView {
      * @param boardModel the model containing the Sudoku board.
      */
     public void boardDisplay(BoardModel boardModel) {
-        String[][] board = boardModel.getBoard();
+        List<List<BoardModel.BoardCell>> board = boardModel.getBoard(); // Assuming getBoard() returns BoardCell[][]
 
         // Display column numbers
         System.out.print("      ");
-        for (int col = 0; col < board[0].length; col++) {
+        for (int col = 0; col < board.get(0).size(); col++) {
             System.out.print((col + 1) + "   ");
         }
 
@@ -35,17 +37,19 @@ public class UserView {
         System.out.println();
 
         // Display row numbers and board content
-        for (int i = 0; i < board.length; i++) {
+        for (int i = 0; i < board.size(); i++) {
             // Display row number
             System.out.print((i + 1) + "    ");
 
             // Display board content for each row
-            for (int j = 0; j < board[i].length; j++) {
-                System.out.print(board[i][j] + " ");
+            for (int j = 0; j < board.get(i).size(); j++) {
+                String value = board.get(i).get(j).value(); // Access the value of each BoardCell
+                System.out.print((value.isEmpty() ? "." : value) + "   "); // Print "." for empty cells
             }
             System.out.println();
         }
     }
+
 
     /**
      * Displays a message to the user.
