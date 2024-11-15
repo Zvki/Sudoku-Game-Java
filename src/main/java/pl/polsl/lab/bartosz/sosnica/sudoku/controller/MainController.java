@@ -209,7 +209,7 @@ public class MainController {
      * Loads game records from a specified file and updates the GUI with the retrieved records.
      */
     public void loadGameRecordsFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("D:\\JAVA.PROJECTS\\PROJECT_SUDOKU\\src\\main\\java\\pl\\polsl\\lab\\bartosz\\sosnica\\sudoku\\resources\\gamehistory.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/java/pl/polsl/lab/bartosz/sosnica/sudoku/resources/gamehistory.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(" ");

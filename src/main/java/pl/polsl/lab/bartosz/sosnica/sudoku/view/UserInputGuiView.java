@@ -1,5 +1,7 @@
 package pl.polsl.lab.bartosz.sosnica.sudoku.view;
 
+import lombok.Getter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -33,7 +35,12 @@ public class UserInputGuiView extends JFrame {
 
     /**
      * The button to submit the user's input and start the game.
+     * -- GETTER --
+     *  Retrieves the submit button component, allowing other classes to customize or manipulate it if necessary.
+     *
+     * @return the submit button used to start the game.
      */
+    @Getter
     private JButton submitButton;
 
     /**
@@ -131,15 +138,6 @@ public class UserInputGuiView extends JFrame {
      */
     public void addGameRecord(String username, String date, String difficulty, String status) {
         tableModel.addRow(new Object[]{username, date, difficulty, status});
-    }
-
-    /**
-     * Retrieves the submit button component, allowing other classes to customize or manipulate it if necessary.
-     *
-     * @return the submit button used to start the game.
-     */
-    public JButton getSubmitButton() {
-        return submitButton;
     }
 
     /**

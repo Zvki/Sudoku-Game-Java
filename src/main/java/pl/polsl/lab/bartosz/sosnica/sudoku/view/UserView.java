@@ -25,9 +25,9 @@ public class UserView {
      * @param boardModel the model containing the Sudoku board.
      */
     public void boardDisplay(BoardModel boardModel) {
-        List<List<BoardModel.BoardCell>> board = boardModel.getBoard(); // Assuming getBoard() returns BoardCell[][]
+        List<List<BoardModel.BoardCell>> board = boardModel.getBoard();
 
-        // Display column numbers
+
         System.out.print("      ");
         for (int col = 0; col < board.get(0).size(); col++) {
             System.out.print((col + 1) + "   ");
@@ -36,15 +36,14 @@ public class UserView {
         System.out.println();
         System.out.println();
 
-        // Display row numbers and board content
         for (int i = 0; i < board.size(); i++) {
-            // Display row number
+
             System.out.print((i + 1) + "    ");
 
-            // Display board content for each row
+
             for (int j = 0; j < board.get(i).size(); j++) {
-                String value = board.get(i).get(j).value(); // Access the value of each BoardCell
-                System.out.print((value.isEmpty() ? "." : value) + "   "); // Print "." for empty cells
+                String value = board.get(i).get(j).value();
+                System.out.print((value.isEmpty() ? "." : value) + "   ");
             }
             System.out.println();
         }

@@ -41,7 +41,6 @@ public class BoardModel {
      *  Returns the current difficulty level of the Sudoku game.
      *
      * @return the difficulty level as a string.
-
      */
     private String difficultyLevel;
 

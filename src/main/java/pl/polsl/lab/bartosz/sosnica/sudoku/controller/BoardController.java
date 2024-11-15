@@ -249,7 +249,6 @@ public class BoardController {
         }
         JOptionPane.showMessageDialog(null, "You solved sudoku!!");
         getBoardModel().changeStatus();
-        saveGameRecordToFile(userModel);
         isSudokuSet = false;
     }
 
@@ -280,7 +279,7 @@ public class BoardController {
      */
     public void saveGameRecordToFile(UserModel userModel) {
         LocalDate currentDate = LocalDate.now();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\JAVA.PROJECTS\\PROJECT_SUDOKU\\src\\main\\java\\pl\\polsl\\lab\\bartosz\\sosnica\\sudoku\\resources\\gamehistory.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/pl/polsl/lab/bartosz/sosnica/sudoku/resources/gamehistory.txt", true))) {
             writer.write(userModel.getUsername() + " " + currentDate + " " + getBoardModel().getDifficultyLevel() + " " + getBoardModel().getStatus());
             writer.newLine();
         } catch (IOException e) {
