@@ -24,7 +24,7 @@ import java.util.*;
  * This class interacts with the BoardModel to manage the board data,
  * SudokuGameView for UI interactions, and UserModel to track the user's progress and preferences.
  * </p>
- * @version 2.4
+ * @version 3.0
  */
 public class BoardController {
 
@@ -165,9 +165,8 @@ public class BoardController {
      * @throws InvalidSudokuMoveException if the move violates Sudoku rules.
      */
     public void isMoveValid(int row, int col, String value) throws InvalidSudokuMoveException {
-        boardModel.isValidNumber(row, col, value);
-        boardModel.isValidPosition(row, col, value);
-        boardModel.isValueIn3x3(row, col, value);
+        boardModel.validateValueUniqueness(row, col, value);
+        boardModel.checkMultipleValues(value);
     }
 
     /**
@@ -294,37 +293,37 @@ public class BoardController {
      * @param args the command-line arguments.
      * @return a valid difficulty level.
      */
-    public String getDifficultyLevelInput(String[] args) {
-        try {
-            getBoardModel().checkDifficultyInput(args);
-            return args[1];
-        } catch (InvalidSudokuMoveException e) {
-            System.out.println(e.getMessage());
-            return getDifficultyLevelInputConsole();
-        }
-    }
+//    public String getDifficultyLevelInput(String[] args) {
+//        try {
+//            getBoardModel().checkDifficultyInput(args);
+//            return args[1];
+//        } catch (InvalidSudokuMoveException e) {
+//            System.out.println(e.getMessage());
+//            return getDifficultyLevelInputConsole();
+//        }
+//    }
 
     /**
      * Prompts the user for difficulty level input through the console and validates it.
      *
      * @return a valid difficulty level as a String.
      */
-    public String getDifficultyLevelInputConsole() {
-        Scanner inputUser = new Scanner(System.in);
-        String diffLevel;
-
-        while (true) {
-            diffLevel = inputUser.nextLine();
-
-            try {
-                getBoardModel().isDiffLvlNumber(diffLevel);
-                getBoardModel().isDiffLvlCorrect(diffLevel);
-                break;
-            } catch (InvalidSudokuMoveException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        return diffLevel;
-    }
+//    public String getDifficultyLevelInputConsole() {
+//        Scanner inputUser = new Scanner(System.in);
+//        String diffLevel;
+//
+//        while (true) {
+//            diffLevel = inputUser.nextLine();
+//
+//            try {
+//                getBoardModel().isDiffLvlNumber(diffLevel);
+//                getBoardModel().isDiffLvlCorrect(diffLevel);
+//                break;
+//            } catch (InvalidSudokuMoveException e) {
+//                System.out.println(e.getMessage());
+//            }
+//        }
+//        return diffLevel;
+//    }
 
 }

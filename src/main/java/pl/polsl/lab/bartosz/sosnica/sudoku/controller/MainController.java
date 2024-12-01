@@ -3,6 +3,7 @@ package pl.polsl.lab.bartosz.sosnica.sudoku.controller;
 import lombok.Getter;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidSudokuMoveException;
 import pl.polsl.lab.bartosz.sosnica.sudoku.exception.InvalidUserInputException;
+import pl.polsl.lab.bartosz.sosnica.sudoku.model.BoardModel;
 import pl.polsl.lab.bartosz.sosnica.sudoku.model.UserModel;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserInputGuiView;
 import pl.polsl.lab.bartosz.sosnica.sudoku.view.UserView;
@@ -22,7 +23,7 @@ import java.util.Scanner;
  * the Sudoku game experience.
  * </p>
  *
- * @version 2.1
+ * @version 3.0
  */
 @Getter
 public class MainController {
@@ -71,14 +72,14 @@ public class MainController {
      *
      * @param args command-line arguments containing the username and difficulty level.
      */
-    public void settingUpUser(String[] args) {
-        
-        this.userModel.setUsername(getUsernameInput(args));
-
-        userView.displayMessage("Welcome, " + this.userModel.getUsername() + "!");
-
-        this.boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
-    }
+//    public void settingUpUser(String[] args) {
+//
+//        this.userModel.setUsername(getUsernameInput(args));
+//
+//        userView.displayMessage("Welcome, " + this.userModel.getUsername() + "!");
+//
+//        this.boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
+//    }
 
     /**
      * Sets up the game by checking the user's input and initializing the game state.
@@ -89,7 +90,10 @@ public class MainController {
         try {
             userModel.checkUsernameInput(args);
             userModel.setUsername(args[0]);
-            boardController.getBoardModel().settingDifficultyLevel(this.boardController.getDifficultyLevelInput(args));
+
+            BoardModel.DifficultyLevel difficultyLevel = BoardModel.DifficultyLevel.valueOf(args[1]);
+            boardController.getBoardModel().settingDifficultyLevel(difficultyLevel);
+
             boardController.setSudokuGameView(userModel);
         } catch (InvalidUserInputException e) {
             userInputGuiView = new UserInputGuiView();
@@ -174,7 +178,9 @@ public class MainController {
             String difficulty = userInputGuiView.getDifficulty();
 
             userModel.setUsername(username);
-            boardController.getBoardModel().settingDifficultyLevel(difficulty);
+
+            BoardModel.DifficultyLevel level = BoardModel.DifficultyLevel.valueOf(difficulty);
+            boardController.getBoardModel().settingDifficultyLevel(level);
 
             JOptionPane.showMessageDialog(null, "Welcome, " + username + "! Difficulty Level: " + difficulty);
 
