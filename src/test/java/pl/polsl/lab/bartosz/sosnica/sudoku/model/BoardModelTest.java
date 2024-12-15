@@ -11,16 +11,28 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * <p>Test class for {@link BoardModel} to verify its functionality.</p>
+ *
+ * @author Bartosz Sośnica
+ * @version 1.0
+ */
 class BoardModelTest {
 
     private BoardModel boardModel;
 
+    /**
+     * Sets up a new instance of {@link BoardModel} and initializes the board before each test.
+     */
     @BeforeEach
     void setUp() {
         boardModel = new BoardModel();
         boardModel.settingUpBoard();
     }
 
+    /**
+     * Tests whether a value can be correctly placed in a specified cell on the board.
+     */
     @Test
     void shouldPlaceValueInCorrectCell() {
         // GIVEN: A board and a request to place a value at (0, 0)
@@ -33,6 +45,12 @@ class BoardModelTest {
         assertEquals("5", resultValue);
     }
 
+    /**
+     * Tests if the difficulty level and corresponding number of cells to remove are set correctly.
+     *
+     * @param difficulty    the difficulty level to be set
+     * @param expectedDiff  the expected number of cells to remove
+     */
     @ParameterizedTest
     @CsvSource({
             "Easy, 3",
@@ -48,6 +66,15 @@ class BoardModelTest {
         assertEquals(expectedDiff, boardModel.getNumberDiff());
     }
 
+    /**
+     * Tests if placing a duplicate value in the same row, column, or block throws an exception.
+     *
+     * @param row       the row of the first value
+     * @param col       the column of the first value
+     * @param value     the value to be placed
+     * @param newRow    the row of the duplicate value
+     * @param newCol    the column of the duplicate value
+     */
     @ParameterizedTest
     @MethodSource("provideInvalidMoves")
     void shouldThrowExceptionWhenValueIsDuplicate(int row, int col, String value, int newRow, int newCol) {
@@ -59,6 +86,11 @@ class BoardModelTest {
                 () -> boardModel.validateValueUniqueness(newRow, newCol, value));
     }
 
+    /**
+     * Provides test data for invalid moves where duplicate values are placed in the same row, column, or block.
+     *
+     * @return a stream of arguments representing invalid moves
+     */
     static Stream<Arguments> provideInvalidMoves() {
         return Stream.of(
                 Arguments.of(0, 0, "5", 1, 0), // Same column
@@ -66,6 +98,11 @@ class BoardModelTest {
         );
     }
 
+    /**
+     * Tests if multiple valid single-digit values pass validation without throwing an exception.
+     *
+     * @param values an array of single-digit values to validate
+     */
     @ParameterizedTest
     @MethodSource("provideValidValues")
     void shouldValidateMultipleSingleDigitValues(String[] values) {
@@ -74,6 +111,11 @@ class BoardModelTest {
         assertDoesNotThrow(() -> boardModel.checkMultipleValues(values));
     }
 
+    /**
+     * Provides test data for valid single-digit values.
+     *
+     * @return a stream of arguments representing valid values
+     */
     static Stream<Arguments> provideValidValues() {
         return Stream.of(
                 Arguments.of((Object) new String[]{"1", "2", "3"}),
@@ -81,6 +123,11 @@ class BoardModelTest {
         );
     }
 
+    /**
+     * Tests if invalid values (non-numeric or multi-digit) throw an exception during validation.
+     *
+     * @param values an array of invalid values to validate
+     */
     @ParameterizedTest
     @MethodSource("provideInvalidValues")
     void shouldThrowExceptionForInvalidMultipleValues(String[] values) {
@@ -90,6 +137,11 @@ class BoardModelTest {
                 () -> boardModel.checkMultipleValues(values));
     }
 
+    /**
+     * Provides test data for invalid values (non-numeric or multi-digit).
+     *
+     * @return a stream of arguments representing invalid values
+     */
     static Stream<Arguments> provideInvalidValues() {
         return Stream.of(
                 Arguments.of((Object) new String[]{"1", "10", "3"}), // Two-digit value
@@ -97,6 +149,9 @@ class BoardModelTest {
         );
     }
 
+    /**
+     * Tests whether a value can be correctly removed from a specified cell on the board.
+     */
     @Test
     void shouldRemoveValueFromCell() {
         // GIVEN: A value placed in a cell
